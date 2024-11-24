@@ -237,6 +237,13 @@ ${stepImages[index] ? `<img src="http://localhost:3000${stepImages[index]}" alt=
 </div>
 </div>
 
+<div id="stepsContainer"></div>
+
+<button type="button" onclick="saveRecipe()">Сохранить рецепт</button>
+</form>
+</div>
+</div>
+
 <script src="../scripts/editRecipe.js"></script>
 </body>
 </html>
