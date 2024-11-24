@@ -102,7 +102,6 @@ header {
 display: flex;
 justify-content: space-between;
 align-items: center;
-background-color: #ff6347;
 color: white;
 padding: 10px;
 }
@@ -118,7 +117,7 @@ background-color: #e5533d;
 color: white;
 }
 h1 {
-color: #ff6347;
+color: #e5533d;
 }
 .recipe {
 border: 1px solid #ddd;
@@ -135,8 +134,9 @@ margin-left: 20px;
 </head>
 <body>
 <header>
-<button onclick="history.back()">Назад</button>
 <h1>${title}</h1>
+<button onclick="editRecipe()">Редактировать</button>
+<button onclick="history.back()">Назад</button>
 <button onclick="location.href='../index.html'">Домой</button>
 </header>
 <div class="recipe">
@@ -151,8 +151,8 @@ ${stepImages[index] ? `<img src="http://localhost:3000${stepImages[index]}" alt=
 </div>
 `).join('')}
 
-
 </div>
+<script src="../scripts/recipe.js"></script>
 </body>
 </html>
 `;
