@@ -54,9 +54,7 @@ cb(null, true);
 } else {
 cb(new Error('Invalid file type'), false);
 }
-};
-
-// Настройка Multer для обработки полей формы
+};// Настройка Multer для обработки полей формы
 const upload = multer({
 storage: storage,
 fileFilter: fileFilter
@@ -130,6 +128,37 @@ max-width: 200px;
 height: auto;
 margin-left: 20px;
 }
+.modal {
+display: none;
+position: fixed;
+z-index: 1;
+left: 0;
+top: 0;
+width: 100%;
+height: 100%;
+overflow: auto;
+background-color: rgb(0,0,0);
+background-color: rgba(0,0,0,0.4);
+}
+.modal-content {
+background-color: #fefefe;
+margin: 15% auto;
+padding: 20px;
+border: 1px solid #888;
+width: 80%;
+}
+.close {
+color: #aaa;
+float: right;
+font-size: 28px;
+font-weight: bold;
+}
+.close:hover,
+.close:focus {
+color: black;
+text-decoration: none;
+cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -141,8 +170,8 @@ margin-left: 20px;
 </header>
 <div class="recipe">
 ${coverImage ? `<img src="http://localhost:3000${coverImage}" alt="${title}" style="max-width: 400px; height: auto;">` : ''}
-<p><strong>Время приготовления:</strong> ${time}</p>
-<p><strong>Ингридиенты:</strong> ${description}</p>
+<p><strong>Время приготовления:</strong> <span id="recipeTime">${time}</span></p>
+<p><strong>Ингредиенты:</strong> <span id="recipeDescription">${description}</span></p>
 <p><strong>Шаги приготовления:</strong></p>
 ${JSON.parse(steps).map((step, index) => `
 <div>
@@ -150,9 +179,65 @@ ${JSON.parse(steps).map((step, index) => `
 ${stepImages[index] ? `<img src="http://localhost:3000${stepImages[index]}" alt="Шаг ${index + 1}">` : ''}
 </div>
 `).join('')}
-
 </div>
-<script src="../scripts/recipe.js"></script>
+
+<!-- Модальное окно для редактирования рецепта -->
+<div id="myModal" class="modal">
+<div class="modal-content">
+<span class="close" onclick="closeModal()">×</span>
+<h2>Редактировать рецепт</h2>
+<form id="recipeForm">
+<label for="title">Название:</label><br>
+<input type="text" id="title" name="title" placeholder="Введите название рецепта"><br><br>
+
+<label for="stepCount">Количество шагов:</label><br>
+<select id="stepCount" name="stepCount">
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+<option value="13">13</option>
+<option value="14">14</option>
+<option value="15">15</option>
+</select><br><br>
+
+<label for="section">Раздел:</label><br>
+<select id="section" name="section">
+<option value="first">Первое</option>
+<option value="second">Второе</option>
+<option value="dough">Тесто</option>
+<option value="healthy">Правильное питание</option>
+<option value="salads">Салаты</option>
+<option value="all">Все подряд</option>
+</select><br><br>
+
+<label for="shortDescription">Краткое описание:</label><br>
+<textarea id="shortDescription" name="shortDescription" placeholder="Введите краткое описание"></textarea><br><br>
+
+<label for="description">Ингредиенты:</label><br>
+<textarea id="description" name="description" placeholder="Введите ингредиенты, каждый с новой строки"></textarea><br><br>
+
+<label for="time">Время приготовления:</label><br>
+<input type="text" id="time" name="time" placeholder="Введите время приготовления"><br><br>
+
+<label for="coverImage">Загрузить обложку:</label><br>
+<input type="file" id="coverImage" name="coverImage"><br><br>
+
+<div id="stepsContainer"></div>
+
+<button type="button" onclick="saveRecipe()">Сохранить рецепт</button>
+</form>
+</div>
+</div>
+
+<script src="../scripts/editRecipe.js"></script>
 </body>
 </html>
 `;
@@ -172,14 +257,14 @@ res.status(500).json({ message: 'Internal Server Error' });
 
 // Маршрут для получения рецептов
 app.get('/recipes', async (req, res) => {
-    try {
-    const recipes = await Recipe.find();
-    res.json(recipes);
-    } catch (error) {
-    console.error('Error fetching recipes:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-    }
-    });
+try {
+const recipes = await Recipe.find();
+res.json(recipes);
+} catch (error) {
+console.error('Error fetching recipes:', error);
+res.status(500).json({ message: 'Internal Server Error' });
+}
+});
 
 // Запуск сервера
 app.listen(port, () => {
