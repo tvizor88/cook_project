@@ -1,0 +1,14 @@
+.recipe {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    display: flex;
+    align-items: flex-start;
+    }
+    .recipe h3 {
+    margin: 0;
+    }
+    .recipe p {
+    margin: 5px 0;
+    }

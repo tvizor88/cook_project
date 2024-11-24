@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кулинарный сайт</title>
+<link rel="stylesheet" href="styles/common.css">
+<link rel="stylesheet" href="styles/index.css">
+</head>
+<body>
+<div id="authModal" class="auth-modal">
+<div class="auth-modal-content">
+<h2>Авторизация</h2>
+<input type="text" id="authUsername" placeholder="Логин">
+<input type="password" id="authPassword" placeholder="Пароль">
+<button onclick="authenticate()">Войти</button>
+<p id="authError" style="color: red; display: none;">Неверный логин или пароль!</p>
+</div>
+</div>
+
+<header style="display: none;">
+<h1>Добро пожаловать на наш кулинарный сайт!</h1>
+</header>
+<div id="nav-placeholder"></div>
+<div class="container" style="display: none;">
+<div class="section">
+<h2>Приготовление еды</h2>
+<p>Здесь вы найдете рецепты на любой вкус!</p>
+</div>
+<button id="addRecipeBtn" style="display: none;">Добавить рецепт</button>
+</div>
+<div id="myModal" class="modal">
+    <div class="modal-content">
+    <span class="close">×</span>
+    <h2>Добавить рецепт</h2>
+    <form id="recipeForm">
+    <!-- Форма добавления рецепта -->
+    <label for="title">Название:</label><br>
+    <input type="text" id="title" name="title"><br><br>
+    <label for="section">Раздел:</label><br>
+    <input type="text" id="section" name="section"><br><br>
+    <label for="shortDescription">Краткое описание:</label><br>
+    <textarea id="shortDescription" name="shortDescription"></textarea><br><br>
+    <label for="description">Описание:</label><br>
+    <textarea id="description" name="description"></textarea><br><br>
+    <label for="time">Время приготовления:</label><br>
+    <input type="text" id="time" name="time"><br><br>
+    <label for="coverImage">Загрузить обложку:</label><br>
+    <input type="file" id="coverImage" name="coverImage"><br><br>
+    <label for="stepCount">Количество шагов:</label><br>
+    <input type="number" id="stepCount" name="stepCount"><br><br>
+    <div id="stepsContainer"></div>
+    <button type="button" onclick="saveRecipe()">Сохранить рецепт</button>
+    </form>
+    </div>
+    </div>
+    
+    <script src="scripts/scripts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        fetch('nav.html')
+        .then(response => response.text())
+        .then(data => {
+        document.getElementById('nav-placeholder').innerHTML = data;
+        })
+        .catch(error => console.error('Ошибка загрузки навигационной панели:', error));
+        });
+        </script>
+    </body>
+    </html>

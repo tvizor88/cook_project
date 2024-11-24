@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тесто</title>
+<link rel="stylesheet" href="styles/common.css">
+<link rel="stylesheet" href="styles/dought.css">
+</head>
+<body>
+<header>
+<h1>Рецепты теста</h1>
+</header>
+<div id="nav-placeholder"></div>
+<div class="container">
+<div class="section">
+<h2>Тесто</h2>
+<div id="recipes"></div>
+</div>
+</div>
+<script src="scripts/scripts.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+fetch('nav.html')
+.then(response => response.text())
+.then(data => {
+document.getElementById('nav-placeholder').innerHTML = data;
+})
+.catch(error => console.error('Ошибка загрузки навигационной панели:', error));
+});
+</script>
+</body>
+</html>

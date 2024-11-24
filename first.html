@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="scripts/scripts.js"></script>
+<script src="scripts/index.js"></script>
+<title>Первое</title>
+<link rel="stylesheet" href="styles/common.css">
+<link rel="stylesheet" href="styles/first.css">
+</head>
+<body>
+<header>
+<h1>Рецепты первых блюд</h1>
+</header>
+<div id="nav-placeholder"></div>
+<div class="container">
+<div class="section">
+<h2>Первые блюда</h2>
+<div id="recipes"></div>
+</div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+fetch('nav.html')
+.then(response => response.text())
+.then(data => {
+document.getElementById('nav-placeholder').innerHTML = data;
+})
+.catch(error => console.error('Ошибка загрузки навигационной панели:', error));
+
+// Загрузка рецептов из базы данных
+fetch('/recipes')
+.then(response => {
+if (!response.ok) {
+throw new Error('Network response was not ok');
+}
+return response.json();
+})
+.then(recipes => {
+const recipesContainer = document.getElementById('recipes');
+if (recipes.length === 0) {
+recipesContainer.innerHTML = '<p>Рецепты не найдены.</p>';
+} else {
+recipes.forEach(recipe => {
+const recipeElement = document.createElement('div');
+recipeElement.className = 'recipe';
+recipeElement.innerHTML = `<h3>${recipe.title}</h3><p>${recipe.description}</p>`;
+recipesContainer.appendChild(recipeElement);
+});
+}
+})
+.catch(error => console.error('Ошибка загрузки рецептов:', error));
+});
+</script>
+</body>
+</html>
