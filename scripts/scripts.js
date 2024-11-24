@@ -130,7 +130,7 @@ function authenticate() {
     const title = document.getElementById('title').value;
     const section = document.getElementById('section').value;
     const shortDescription = document.getElementById('shortDescription').value;
-    const description = document.getElementById('description').value;
+    const description = document.getElementById('description').value.replace(/\n/g, '<br>').replace(/^/, '<br>');
     const steps = Array.from(document.querySelectorAll('textarea[name="steps[]"]')).map(textarea => textarea.value);
     const time = document.getElementById('time').value;
     const coverImage = document.getElementById('coverImage').files[0];
@@ -188,7 +188,7 @@ function authenticate() {
         recipeDiv.innerHTML = `
         <div class="recipe-content">
         <h3><a href="recipes/${recipe.title}.html">${recipe.title}</a></h3>
-        <p><strong>Описание:</strong> ${recipe.description}</p>
+        <p><strong>Ингридиенты:</strong> ${recipe.description}</p>
         <p><strong>Время приготовления:</strong> ${recipe.time}</p>
         </div>
         ${recipe.coverImage ? `<img src="http://localhost:3000${recipe.coverImage}" alt="${recipe.title}">` : ''}

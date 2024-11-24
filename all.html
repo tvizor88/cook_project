@@ -53,7 +53,7 @@ recipeElement.innerHTML = `
 <div class="recipe-content">
 <div class="recipe-text">
 <h3><a href="recipes/${recipe.title}.html">${recipe.title}</a></h3>
-<p><strong>Описание:</strong> ${recipe.description}</p>
+<p><strong>Ингридиенты:</strong> ${recipe.description}</p>
 <p><strong>Время приготовления:</strong> ${recipe.time}</p>
 </div>
 ${recipe.coverImage ? `<div class="recipe-image"><img src="http://localhost:3000${recipe.coverImage}" alt="${recipe.title}"></div>` : ''}
