@@ -40,8 +40,8 @@ function authenticate() {
     }
     }
     
-   // Функция выхода из системы
-   function logout() {
+    // Функция выхода из системы
+    function logout() {
     localStorage.clear();
     // Скрываем элементы страницы
     toggleDisplay('header', false);
@@ -160,7 +160,16 @@ function authenticate() {
     if (response.ok) {
     document.getElementById('myModal').style.display = 'none';
     const result = await response.json();
-    window.location.href = `../${result.section}.html`;
+    // Перенаправление на соответствующую страницу
+    const sectionPageMap = {
+    'первое': 'first.html',
+    'второе': 'second.html',
+    'тесто': 'dough.html',
+    'правильное питание': 'healthy.html',
+    'салаты': 'salads.html',
+    'все подряд': 'misc.html'
+    };
+    window.location.href = sectionPageMap[section] || 'index.html';
     } else {
     console.error('Ошибка при сохранении рецепта');
     }
@@ -172,6 +181,7 @@ function authenticate() {
     const recipes = await response.json();
     const sectionRecipes = recipes.filter(recipe => recipe.section === section);
     const recipesContainer = document.getElementById('recipes');
+    recipesContainer.innerHTML = ''; // Очистка контейнера перед добавлением новых рецептов
     
     sectionRecipes.forEach(recipe => {
     const recipeDiv = document.createElement('div');
@@ -191,5 +201,7 @@ function authenticate() {
     // Загрузка рецептов при загрузке страницы
     document.addEventListener('DOMContentLoaded', function() {
     const section = document.body.dataset.section;
+    if (section) {
     loadRecipes(section);
+    }
     });

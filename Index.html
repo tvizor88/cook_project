@@ -29,42 +29,95 @@
 </div>
 <button id="addRecipeBtn" style="display: none;">Добавить рецепт</button>
 </div>
+
 <div id="myModal" class="modal">
-    <div class="modal-content">
-    <span class="close">×</span>
-    <h2>Добавить рецепт</h2>
-    <form id="recipeForm">
-    <!-- Форма добавления рецепта -->
-    <label for="title">Название:</label><br>
-    <input type="text" id="title" name="title"><br><br>
-    <label for="section">Раздел:</label><br>
-    <input type="text" id="section" name="section"><br><br>
-    <label for="shortDescription">Краткое описание:</label><br>
-    <textarea id="shortDescription" name="shortDescription"></textarea><br><br>
-    <label for="description">Описание:</label><br>
-    <textarea id="description" name="description"></textarea><br><br>
-    <label for="time">Время приготовления:</label><br>
-    <input type="text" id="time" name="time"><br><br>
-    <label for="coverImage">Загрузить обложку:</label><br>
-    <input type="file" id="coverImage" name="coverImage"><br><br>
-    <label for="stepCount">Количество шагов:</label><br>
-    <input type="number" id="stepCount" name="stepCount"><br><br>
-    <div id="stepsContainer"></div>
-    <button type="button" onclick="saveRecipe()">Сохранить рецепт</button>
-    </form>
-    </div>
-    </div>
-    
-    <script src="scripts/scripts.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-        fetch('nav.html')
-        .then(response => response.text())
-        .then(data => {
-        document.getElementById('nav-placeholder').innerHTML = data;
-        })
-        .catch(error => console.error('Ошибка загрузки навигационной панели:', error));
-        });
-        </script>
-    </body>
-    </html>
+<div class="modal-content">
+<span class="close">×</span>
+<h2>Добавить рецепт</h2>
+<form id="recipeForm">
+<label for="title">Название:</label><br>
+<input type="text" id="title" name="title"><br><br>
+
+<label for="stepCount">Количество шагов:</label><br>
+<select id="stepCount" name="stepCount">
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+<option value="13">13</option>
+<option value="14">14</option>
+<option value="15">15</option>
+</select><br><br>
+
+<label for="section">Раздел:</label><br>
+<select id="section" name="section">
+<option value="первое">Первое</option>
+<option value="второе">Второе</option>
+<option value="тесто">Тесто</option>
+<option value="правильное питание">Правильное питание</option>
+<option value="салаты">Салаты</option>
+<option value="все подряд">Все подряд</option>
+</select><br><br>
+
+<label for="shortDescription">Краткое описание:</label><br>
+<textarea id="shortDescription" name="shortDescription"></textarea><br><br>
+
+<label for="description">Описание:</label><br>
+<textarea id="description" name="description"></textarea><br><br>
+
+<label for="time">Время приготовления:</label><br>
+<input type="text" id="time" name="time"><br><br>
+
+<label for="coverImage">Загрузить обложку:</label><br>
+<input type="file" id="coverImage" name="coverImage"><br><br>
+
+<div id="stepsContainer"></div>
+
+<button type="button" onclick="saveRecipe()">Сохранить рецепт</button>
+</form>
+</div>
+</div>
+
+<script src="scripts/scripts.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+fetch('nav.html')
+.then(response => response.text())
+.then(data => {
+document.getElementById('nav-placeholder').innerHTML = data;
+})
+.catch(error => console.error('Ошибка загрузки навигационной панели:', error));
+
+// Обработчик изменения количества шагов
+const stepCountInput = document.getElementById('stepCount');
+if (stepCountInput) {
+stepCountInput.onchange = function() {
+const stepCount = parseInt(this.value);
+const stepsContainer = document.getElementById('stepsContainer');
+stepsContainer.innerHTML = '';
+for (let i = 1; i <= stepCount; i++) {
+const stepDiv = document.createElement('div');
+stepDiv.innerHTML = `
+<label for="step${i}">Шаг ${i}:</label><br>
+<textarea id="step${i}" name="steps[]"></textarea><br><br>
+<label for="stepImage${i}">Загрузить фото:</label><br>
+<input type="file" id="stepImage${i}" name="stepImages[]"><br><br>
+`;
+stepsContainer.appendChild(stepDiv);
+}
+};
+// Инициализация с 2 шагами по умолчанию
+stepCountInput.value = 2;
+stepCountInput.onchange();
+}
+});
+</script>
+</body>
+</html>
