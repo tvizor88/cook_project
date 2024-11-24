@@ -20,14 +20,37 @@
 </div>
 <script src="scripts/scripts.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-fetch('nav.html')
-.then(response => response.text())
-.then(data => {
-document.getElementById('nav-placeholder').innerHTML = data;
-})
-.catch(error => console.error('Ошибка загрузки навигационной панели:', error));
-});
-</script>
+    document.addEventListener('DOMContentLoaded', function() {
+    fetch('nav.html')
+    .then(response => response.text())
+    .then(data => {
+    document.getElementById('nav-placeholder').innerHTML = data;
+    })
+    .catch(error => console.error('Ошибка загрузки навигационной панели:', error));
+    
+    // Загрузка рецептов из базы данных
+    fetch('http://localhost:3000/recipes')
+    .then(response => {
+    if (!response.ok) {
+    throw new Error('Network response was not ok');
+    }
+    return response.json();
+    })
+    .then(recipes => {
+    const recipesContainer = document.getElementById('recipes');
+    if (recipes.length === 0) {
+    recipesContainer.innerHTML = '<p>Рецепты не найдены.</p>';
+    } else {
+    recipes.forEach(recipe => {
+    const recipeElement = document.createElement('div');
+    recipeElement.className = 'recipe';
+    recipeElement.innerHTML = `<h3>${recipe.title}</h3><p>${recipe.description}</p>`;
+    recipesContainer.appendChild(recipeElement);
+    });
+    }
+    })
+    .catch(error => console.error('Ошибка загрузки рецептов:', error));
+    });
+    </script>
 </body>
 </html>

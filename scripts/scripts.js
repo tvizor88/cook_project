@@ -175,33 +175,25 @@ function authenticate() {
     }
     }
     
-    // Функция загрузки рецептов
     async function loadRecipes(section) {
-    const response = await fetch('http://localhost:3000/recipes');
-    const recipes = await response.json();
-    const sectionRecipes = recipes.filter(recipe => recipe.section === section);
-    const recipesContainer = document.getElementById('recipes');
-    recipesContainer.innerHTML = ''; // Очистка контейнера перед добавлением новых рецептов
-    
-    sectionRecipes.forEach(recipe => {
-    const recipeDiv = document.createElement('div');
-    recipeDiv.className = 'recipe';
-    recipeDiv.innerHTML = `
-    <div class="recipe-content">
-    <h3><a href="recipes/${recipe.title}.html">${recipe.title}</a></h3>
-    <p><strong>Описание:</strong> ${recipe.description}</p>
-    <p><strong>Время приготовления:</strong> ${recipe.time}</p>
-    </div>
-    ${recipe.coverImage ? `<img src="http://localhost:3000${recipe.coverImage}" alt="${recipe.title}">` : ''}
-    `;
-    recipesContainer.appendChild(recipeDiv);
-    });
-    }
-    
-    // Загрузка рецептов при загрузке страницы
-    document.addEventListener('DOMContentLoaded', function() {
-    const section = document.body.dataset.section;
-    if (section) {
-    loadRecipes(section);
-    }
-    });
+        const response = await fetch('http://localhost:3000/recipes');
+        const recipes = await response.json();
+        const sectionRecipes = recipes.filter(recipe => recipe.section === section);
+        const recipesContainer = document.getElementById('recipes');
+        recipesContainer.innerHTML = ''; // Очистка контейнера перед добавлением новых рецептов
+        
+        sectionRecipes.forEach(recipe => {
+        const recipeDiv = document.createElement('div');
+        recipeDiv.className = 'recipe';
+        recipeDiv.innerHTML = `
+        <div class="recipe-content">
+        <h3><a href="recipes/${recipe.title}.html">${recipe.title}</a></h3>
+        <p><strong>Описание:</strong> ${recipe.description}</p>
+        <p><strong>Время приготовления:</strong> ${recipe.time}</p>
+        </div>
+        ${recipe.coverImage ? `<img src="http://localhost:3000${recipe.coverImage}" alt="${recipe.title}">` : ''}
+        `;
+        recipesContainer.appendChild(recipeDiv);
+        });
+        }
+        
