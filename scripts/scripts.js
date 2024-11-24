@@ -162,12 +162,12 @@ function authenticate() {
     const result = await response.json();
     // Перенаправление на соответствующую страницу
     const sectionPageMap = {
-    'первое': 'first.html',
-    'второе': 'second.html',
-    'тесто': 'dough.html',
-    'правильное питание': 'healthy.html',
-    'салаты': 'salads.html',
-    'все подряд': 'misc.html'
+    'first': 'first.html',
+    'second': 'second.html',
+    'dough': 'dough.html',
+    'healthy': 'healthy.html',
+    'salads': 'salads.html',
+    'all': 'all.html'
     };
     window.location.href = sectionPageMap[section] || 'index.html';
     } else {
