@@ -8,6 +8,8 @@
 .recipe { margin-bottom: 20px; }
 .recipe-content { margin-bottom: 10px; }
 img { max-width: 100%; height: auto; }
+.step { margin-bottom: 10px; }
+.step img { max-width: 100%; height: auto; }
 </style>
 </head>
 <body>
@@ -27,13 +29,19 @@ const recipe = await response.json();
 const recipeContainer = document.getElementById('recipe-page');
 recipeContainer.innerHTML = `
 <h1>${recipe.title}</h1>
+<p><strong>ID рецепта:</strong> ${recipe._id}</p>
 <img src="http://localhost:3000${recipe.coverImage}" alt="${recipe.title}">
-<p><strong>Ингридиенты:</strong> ${recipe.description}</p>
+<p><strong>Ингредиенты:</strong> ${recipe.description}</p>
 <p><strong>Время приготовления:</strong> ${recipe.time}</p>
 <h2>Шаги приготовления</h2>
-<ul>
-${recipe.steps.map(step => `<li>${step}</li>`).join('')}
-</ul>
+<div id="steps">
+${recipe.steps.map((step, index) => `
+<div class="step">
+<p>${step}</p>
+${recipe.stepImages && recipe.stepImages[index] ? `<img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${index + 1}">` : ''}
+</div>
+`).join('')}
+</div>
 `;
 }
 
