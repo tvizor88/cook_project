@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recipe Page</title>
+<style>
+.recipe { margin-bottom: 20px; }
+.recipe-content { margin-bottom: 10px; }
+img { max-width: 100%; height: auto; }
+</style>
+</head>
+<body>
+<div id="recipe-page"></div>
+
+<script>
+async function loadRecipePage() {
+const urlParams = new URLSearchParams(window.location.search);
+const recipeId = urlParams.get('id');
+if (!recipeId) {
+document.getElementById('recipe-page').innerHTML = '<p>Recipe not found</p>';
+return;
+}
+
+const response = await fetch(`http://localhost:3000/recipes/${recipeId}`);
+const recipe = await response.json();
+const recipeContainer = document.getElementById('recipe-page');
+recipeContainer.innerHTML = `
+<h1>${recipe.title}</h1>
+<img src="http://localhost:3000${recipe.coverImage}" alt="${recipe.title}">
+<p><strong>Ингридиенты:</strong> ${recipe.description}</p>
+<p><strong>Время приготовления:</strong> ${recipe.time}</p>
+<h2>Шаги приготовления</h2>
+<ul>
+${recipe.steps.map(step => `<li>${step}</li>`).join('')}
+</ul>
+`;
+}
+
+// Load the recipe when the page loads
+window.onload = loadRecipePage;
+</script>
+</body>
+</html>

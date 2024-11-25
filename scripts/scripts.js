@@ -209,6 +209,30 @@ function authenticate() {
     }
     
     async function loadRecipes(section) {
+        const response = await fetch('http://localhost:3000/recipes');
+        const recipes = await response.json();
+        const sectionRecipes = recipes.filter(recipe => recipe.section === section);
+        const recipesContainer = document.getElementById('recipes');
+        recipesContainer.innerHTML = ''; // Очистка контейнера перед добавлением новых рецептов
+        
+        sectionRecipes.forEach(recipe => {
+        const recipeDiv = document.createElement('div');
+        recipeDiv.className = 'recipe';
+        recipeDiv.innerHTML = `
+        <div class="recipe-content">
+        <h3><a href="recipe.html?id=${recipe._id}">${recipe.title}</a></h3>
+        <p><strong>Ингридиенты:</strong> ${recipe.description}</p>
+        <p><strong>Время приготовления:</strong> ${recipe.time}</p>
+        </div>
+        ${recipe.coverImage ? `<img src="http://localhost:3000${recipe.coverImage}" alt="${recipe.title}">` : ''}
+        `;
+        recipesContainer.appendChild(recipeDiv);
+        });
+        }
+
+//--------------------------------------working here----------------------------------//
+
+async function loadRecipes(section) {
     const response = await fetch('http://localhost:3000/recipes');
     const recipes = await response.json();
     const sectionRecipes = recipes.filter(recipe => recipe.section === section);
@@ -220,12 +244,40 @@ function authenticate() {
     recipeDiv.className = 'recipe';
     recipeDiv.innerHTML = `
     <div class="recipe-content">
-    <h3><a href="recipes/${recipe.title}.html">${recipe.title}</a></h3>
+    <h3><a href="recipe.html?id=${recipe._id}">${recipe.title}</a></h3>
     <p><strong>Ингридиенты:</strong> ${recipe.description}</p>
     <p><strong>Время приготовления:</strong> ${recipe.time}</p>
     </div>
     ${recipe.coverImage ? `<img src="http://localhost:3000${recipe.coverImage}" alt="${recipe.title}">` : ''}
-`;
-recipesContainer.appendChild(recipeDiv);
-});
-}
+    `;
+    recipesContainer.appendChild(recipeDiv);
+    });
+    }
+
+async function loadRecipePage(id) {
+        const response = await fetch(`http://localhost:3000/recipes/${id}`);
+        const recipe = await response.json();
+        const recipeContainer = document.getElementById('recipe-page');
+        recipeContainer.innerHTML = `
+        <h1>${recipe.title}</h1>
+        <img src="http://localhost:3000${recipe.coverImage}" alt="${recipe.title}">
+        <p><strong>Ингридиенты:</strong> ${recipe.description}</p>
+        <p><strong>Время приготовления:</strong> ${recipe.time}</p>
+        <h2>Шаги приготовления</h2>
+        <ul>
+        ${recipe.steps.map(step => `<li>${step}</li>`).join('')}
+        </ul>
+        `;
+        showRecipePage();
+        }
+
+function showRecipePage() {
+            document.getElementById('recipes').style.display = 'none';
+            document.getElementById('recipe-page').style.display = 'block';
+            }
+            
+function showRecipesList() {
+            document.getElementById('recipes').style.display = 'block';
+            document.getElementById('recipe-page').style.display = 'none';
+            }
+        

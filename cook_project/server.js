@@ -109,7 +109,6 @@ console.error('Error saving recipe:', error);
 res.status(500).json({ message: 'Internal Server Error' });
 }
 });
-//-----------------------------------up code is workin DO NOT TATCH----------------------------------------------------------//
 
 // Route to get recipes
 app.get('/recipes', async (req, res) => {
@@ -122,8 +121,21 @@ app.get('/recipes', async (req, res) => {
     }
     });
 
+//-----------------------------------up code is workin DO NOT TATCH----------------------------------------------------------//
 
-
+// Route to get a recipe by ID
+app.get('/recipes/:id', async (req, res) => {
+    try {
+    const recipe = await Recipe.findById(req.params.id);
+    if (!recipe) {
+    return res.status(404).json({ message: 'Recipe not found' });
+    }
+    res.json(recipe);
+    } catch (error) {
+    console.error('Error fetching recipe:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+    }
+    });
 
 
 
