@@ -1,4 +1,3 @@
-// Функция аутентификации
 function authenticate() {
     const username = document.getElementById('authUsername').value;
     const password = document.getElementById('authPassword').value;
@@ -125,7 +124,26 @@ function authenticate() {
     };
     }
     
-    // Функция сохранения рецепта
+    // Обработка загрузки изображений
+    async function uploadImage(file, endpoint) {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await fetch(endpoint, {
+    method: 'POST',
+    body: formData
+    });
+    
+    if (response.ok) {
+    const data = await response.json();
+    return data.filePath;
+    } else {
+    console.error('Ошибка при загрузке изображения');
+    return null;
+    }
+    }
+    
+    // Вызов функций загрузки изображений и сохранения рецепта
     async function saveRecipe() {
     const title = document.getElementById('title').value;
     const section = document.getElementById('section').value;
@@ -136,25 +154,40 @@ function authenticate() {
     const coverImage = document.getElementById('coverImage').files[0];
     const stepImages = Array.from(document.querySelectorAll('input[name="stepImages[]"]')).map(input => input.files[0]);
     
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('section', section);
-    formData.append('shortDescription', shortDescription);
-    formData.append('description', description);
-    formData.append('steps', JSON.stringify(steps));
-    formData.append('time', time);
+    // Загрузка обложки
+    let coverImagePath = null;
     if (coverImage) {
-    formData.append('coverImage', coverImage);
+    coverImagePath = await uploadImage(coverImage, 'http://localhost:3000/uploadCoverImage');
     }
-    stepImages.forEach((file, index) => {
-    if (file) {
-    formData.append('stepImages[]', file);
-    }
-    });
     
+    // Загрузка изображений шагов
+    const stepImagesPaths = [];
+    for (const file of stepImages) {
+    if (file) {
+    const filePath = await uploadImage(file, 'http://localhost:3000/uploadStepImage');
+    stepImagesPaths.push(filePath);
+    }
+    }
+    
+    // Создаем объект с данными рецепта
+    const recipeData = {
+    title,
+    section,
+    shortDescription,
+    description,
+    steps,
+    time,
+    coverImage: coverImagePath,
+    stepImages: stepImagesPaths
+    };
+    
+    // Отправляем данные рецепта в формате JSON
     const response = await fetch('http://localhost:3000/recipes', {
     method: 'POST',
-    body: formData
+    headers: {
+    'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(recipeData)
     });
     
     if (response.ok) {
@@ -176,24 +209,23 @@ function authenticate() {
     }
     
     async function loadRecipes(section) {
-        const response = await fetch('http://localhost:3000/recipes');
-        const recipes = await response.json();
-        const sectionRecipes = recipes.filter(recipe => recipe.section === section);
-        const recipesContainer = document.getElementById('recipes');
-        recipesContainer.innerHTML = ''; // Очистка контейнера перед добавлением новых рецептов
-        
-        sectionRecipes.forEach(recipe => {
-        const recipeDiv = document.createElement('div');
-        recipeDiv.className = 'recipe';
-        recipeDiv.innerHTML = `
-        <div class="recipe-content">
-        <h3><a href="recipes/${recipe.title}.html">${recipe.title}</a></h3>
-        <p><strong>Ингридиенты:</strong> ${recipe.description}</p>
-        <p><strong>Время приготовления:</strong> ${recipe.time}</p>
-        </div>
-        ${recipe.coverImage ? `<img src="http://localhost:3000${recipe.coverImage}" alt="${recipe.title}">` : ''}
-        `;
-        recipesContainer.appendChild(recipeDiv);
-        });
-        }
-        
+    const response = await fetch('http://localhost:3000/recipes');
+    const recipes = await response.json();
+    const sectionRecipes = recipes.filter(recipe => recipe.section === section);
+    const recipesContainer = document.getElementById('recipes');
+    recipesContainer.innerHTML = ''; // Очистка контейнера перед добавлением новых рецептов
+    
+    sectionRecipes.forEach(recipe => {
+    const recipeDiv = document.createElement('div');
+    recipeDiv.className = 'recipe';
+    recipeDiv.innerHTML = `
+    <div class="recipe-content">
+    <h3><a href="recipes/${recipe.title}.html">${recipe.title}</a></h3>
+    <p><strong>Ингридиенты:</strong> ${recipe.description}</p>
+    <p><strong>Время приготовления:</strong> ${recipe.time}</p>
+    </div>
+    ${recipe.coverImage ? `<img src="http://localhost:3000${recipe.coverImage}" alt="${recipe.title}">` : ''}
+`;
+recipesContainer.appendChild(recipeDiv);
+});
+}
