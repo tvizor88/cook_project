@@ -228,11 +228,9 @@ function authenticate() {
         `;
         recipesContainer.appendChild(recipeDiv);
         });
-        }
+    }
 
-//--------------------------------------working here----------------------------------//
-
-async function loadRecipes(section) {
+    async function loadRecipes(section) {
     const response = await fetch('http://localhost:3000/recipes');
     const recipes = await response.json();
     const sectionRecipes = recipes.filter(recipe => recipe.section === section);
@@ -254,7 +252,7 @@ async function loadRecipes(section) {
     });
     }
 
-async function loadRecipePage(id) {
+    async function loadRecipePage(id) {
         const response = await fetch(`http://localhost:3000/recipes/${id}`);
         const recipe = await response.json();
         const recipeContainer = document.getElementById('recipe-page');
@@ -269,15 +267,16 @@ async function loadRecipePage(id) {
         </ul>
         `;
         showRecipePage();
-        }
+    }
 
-function showRecipePage() {
+    function showRecipePage() {
             document.getElementById('recipes').style.display = 'none';
             document.getElementById('recipe-page').style.display = 'block';
-            }
+    }
             
-function showRecipesList() {
+    function showRecipesList() {
             document.getElementById('recipes').style.display = 'block';
             document.getElementById('recipe-page').style.display = 'none';
-            }
+    }
         
+//--------------------------------------working here----------------------------------//

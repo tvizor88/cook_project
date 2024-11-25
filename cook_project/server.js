@@ -121,8 +121,6 @@ app.get('/recipes', async (req, res) => {
     }
     });
 
-//-----------------------------------up code is workin DO NOT TATCH----------------------------------------------------------//
-
 // Route to get a recipe by ID
 app.get('/recipes/:id', async (req, res) => {
     try {
@@ -137,7 +135,7 @@ app.get('/recipes/:id', async (req, res) => {
     }
     });
 
-
+//-----------------------------------up code is workin DO NOT TATCH----------------------------------------------------------//
 
 // Запуск сервера
 app.listen(port, () => {
