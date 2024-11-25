@@ -40,7 +40,7 @@ const Recipe = mongoose.model('Recipe', recipeSchema); // creating the model for
 // Настройка хранилища для Multer
 const storage = multer.diskStorage({
 destination: function (req, file, cb) {
-cb(null, 'uploads/');
+cb(null, '../uploads/');
 },
 filename: function (req, file, cb) {
 cb(null, Date.now() + '-' + file.originalname);
