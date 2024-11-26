@@ -2,6 +2,7 @@ async function uploadImage(file, endpoint) {
     const formData = new FormData();
     formData.append('file', file);
     
+    try {
     const response = await fetch(endpoint, {
     method: 'POST',
     body: formData
@@ -12,6 +13,10 @@ async function uploadImage(file, endpoint) {
     return data.filePath;
     } else {
     console.error('Ошибка при загрузке изображения');
+    return null;
+    }
+    } catch (error) {
+    console.error('Ошибка при загрузке изображения:', error);
     return null;
     }
     }
@@ -38,41 +43,41 @@ async function uploadImage(file, endpoint) {
     const coverImageInput = document.getElementById('coverImage');
     if (coverImageInput && coverImageInput.files.length > 0) {
     const coverImageFile = coverImageInput.files[0];
-    const coverImagePath = await uploadImage(coverImageFile, 'http://localhost:3000/upload');
+    const coverImagePath = await uploadImage(coverImageFile, 'http://localhost:3000/uploadCoverImage');
     if (coverImagePath) {
     recipeData.coverImage = coverImagePath;
     }
     } else {
-        const coverImageElement = document.getElementById('currentCoverImage');
-        if (coverImageElement && coverImageElement.src) {
-        const coverImageUrl = new URL(coverImageElement.src);
-        recipeData.coverImage = coverImageUrl.pathname; // Сохраняем только относительный путь
-        } else {
-        recipeData.coverImage = ''; // Устанавливаем пустую строку, если изображение удалено
-        }
-        }
+    const coverImageElement = document.getElementById('currentCoverImage');
+    if (coverImageElement && coverImageElement.src) {
+    const coverImageUrl = new URL(coverImageElement.src);
+    recipeData.coverImage = coverImageUrl.pathname; // Сохраняем только относительный путь
+    } else {
+    recipeData.coverImage = ''; // Устанавливаем пустую строку, если изображение удалено
+    }
+    }
     
-        for (let i = 1; i <= document.getElementById('stepCount').value; i++) {
-            recipeData.steps.push(document.getElementById(`step${i}`).value);
-            const stepImageInput = document.getElementById(`stepImage${i}`);
-            if (stepImageInput && stepImageInput.files.length > 0) {
-            const stepImageFile = stepImageInput.files[0];
-            const stepImagePath = await uploadImage(stepImageFile, 'http://localhost:3000/upload');
-            if (stepImagePath) {
-            recipeData.stepImages.push(stepImagePath);
-            } else {
-            recipeData.stepImages.push('');
-            }
-            } else {
-            const stepImageElement = document.querySelector(`#photo-step-${i} img`);
-            if (stepImageElement) {
-            const stepImageUrl = new URL(stepImageElement.src);
-            recipeData.stepImages.push(stepImageUrl.pathname); // Сохраняем только относительный путь
-            } else {
-            recipeData.stepImages.push('');
-            }
-            }
-            }
+    for (let i = 1; i <= document.getElementById('stepCount').value; i++) {
+    recipeData.steps.push(document.getElementById(`step${i}`).value);
+    const stepImageInput = document.getElementById(`stepImage${i}`);
+    if (stepImageInput && stepImageInput.files.length > 0) {
+    const stepImageFile = stepImageInput.files[0];
+    const stepImagePath = await uploadImage(stepImageFile, 'http://localhost:3000/uploadStepImage');
+    if (stepImagePath) {
+    recipeData.stepImages.push(stepImagePath);
+    } else {
+    recipeData.stepImages.push('');
+    }
+    } else {
+    const stepImageElement = document.querySelector(`#photo-step-${i} img`);
+    if (stepImageElement) {
+    const stepImageUrl = new URL(stepImageElement.src);
+    recipeData.stepImages.push(stepImageUrl.pathname); // Сохраняем только относительный путь
+    } else {
+    recipeData.stepImages.push('');
+    }
+    }
+    }
     
     const response = await fetch(`http://localhost:3000/recipes/${recipeId}`, {
     method: 'PUT',
@@ -117,6 +122,7 @@ async function uploadImage(file, endpoint) {
     return;
     }
     
+    try {
     const response = await fetch(`http://localhost:3000/recipes/${recipeId}`);
     const recipe = await response.json();
     const recipeContainer = document.getElementById('recipe-page');
@@ -147,6 +153,9 @@ async function uploadImage(file, endpoint) {
     `).join('')}
     </div>
     `;
+    } catch (error) {
+    console.error('Ошибка при загрузке рецепта:', error);
+    }
     }
     
     async function deleteRecipe() {
@@ -157,6 +166,7 @@ async function uploadImage(file, endpoint) {
     return;
     }
     
+    try {
     const response = await fetch(`http://localhost:3000/recipes/${recipeId}`, {
     method: 'DELETE'
     });
@@ -167,10 +177,13 @@ async function uploadImage(file, endpoint) {
     } else {
     alert('Failed to delete recipe');
     }
+    } catch (error) {
+    console.error('Ошибка при удалении рецепта:', error);
+    }
     }
     
     function openModal() {
-    document.getElementById('myModal').style.display = "block";
+    document.getElementById('myModal').style.display = 'block';
     // Предзаполнение формы при открытии модального окна
     const urlParams = new URLSearchParams(window.location.search);
     const recipeId = urlParams.get('id');
@@ -201,38 +214,40 @@ async function uploadImage(file, endpoint) {
     <button class="delete-photo" data-photo-id="step-${index + 1}">X</button>
     </div>
     <button id="upload-button-step-${index + 1}" class="upload-photo" data-photo-id="step-${index + 1}" style="display:none;">Загрузить фото</button>
-    ` : ''}
+    ` : `
+    <input type="file" id="stepImage${index + 1}" name="stepImages[]" accept="image/*"><br>
+    `}
     `;
     stepsContainer.appendChild(stepDiv);
     });
     });
     }
     }
-    
     function closeModal() {
-    document.getElementById('myModal').style.display = "none";
-    }
-    
-    function goBack() {
-    const previousPage = document.referrer;
-    if (previousPage) {
-    window.location.href = previousPage;
-    } else {
-    window.history.back();
-    }
-    }
-    
-    // When the user clicks on <span> (x), close the modal
-    document.querySelector('.close').onclick = function() {
-    closeModal();
-    }
-    
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-    if (event.target == document.getElementById('myModal')) {
-    closeModal();
-    }
-    }
-    
-    // Load the recipe when the page loads
-    window.onload = loadRecipePage;
+        document.getElementById('myModal').style.display = 'none';
+        }
+        
+        function goBack() {
+        const previousPage = document.referrer;
+        if (previousPage) {
+        window.location.href = previousPage;
+        } else {
+        window.history.back();
+        }
+        }
+        
+        // When the user clicks on <span> (x), close the modal
+        document.querySelector('.close').onclick = function() {
+        closeModal();
+        }
+        
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+        if (event.target == document.getElementById('myModal')) {
+        closeModal();
+        }
+        }
+        
+        // Load the recipe when the page loads
+        window.onload = loadRecipePage;
+        
