@@ -112,47 +112,72 @@ res.status(500).json({ message: 'Internal Server Error' });
 
 // Route to get recipes
 app.get('/recipes', async (req, res) => {
-    try {
-    const recipes = await Recipe.find();
-    res.json(recipes);
-    } catch (error) {
-    console.error('Error fetching recipes:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-    }
-    });
+try {
+const recipes = await Recipe.find();
+res.json(recipes);
+} catch (error) {
+console.error('Error fetching recipes:', error);
+res.status(500).json({ message: 'Internal Server Error' });
+}
+});
 
 // Route to get a recipe by ID
 app.get('/recipes/:id', async (req, res) => {
-    try {
-    const recipe = await Recipe.findById(req.params.id);
-    if (!recipe) {
-    return res.status(404).json({ message: 'Recipe not found' });
-    }
-    res.json(recipe);
-    } catch (error) {
-    console.error('Error fetching recipe:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-    }
-    });
+try {
+const recipe = await Recipe.findById(req.params.id);
+if (!recipe) {
+return res.status(404).json({ message: 'Recipe not found' });
+}
+res.json(recipe);
+} catch (error) {
+console.error('Error fetching recipe:', error);
+res.status(500).json({ message: 'Internal Server Error' });
+}
+});
 
-//-----------------------------------up code is workin DO NOT TATCH----------------------------------------------------------//
-
-//route to delete recipe
+// Route to delete recipe
 app.delete('/recipes/:id', async (req, res) => {
-    const recipeId = req.params.id;
-    try {
-    // Предположим, что у вас есть модель Recipe для работы с коллекцией рецептов
-    const result = await Recipe.findByIdAndDelete(recipeId);
-    if (result) {
-    res.status(200).send({ message: 'Recipe deleted successfully' });
-    } else {
-    res.status(404).send({ message: 'Recipe not found' });
-    }
-    } catch (error) {
-    res.status(500).send({ message: 'Failed to delete recipe', error });
-    }
-    });
+const recipeId = req.params.id;
+try {
+const result = await Recipe.findByIdAndDelete(recipeId);
+if (result) {
+res.status(200).send({ message: 'Recipe deleted successfully' });
+} else {
+res.status(404).send({ message: 'Recipe not found' });
+}
+} catch (error) {
+res.status(500).send({ message: 'Failed to delete recipe', error });
+}
+});
 
+// Обновление рецепта
+app.put('/recipes/:id', async (req, res) => {
+try {
+const recipeId = req.params.id;
+const updatedData = {
+title: req.body.title,
+shortDescription: req.body.shortDescription,
+description: req.body.description,
+time: req.body.time,
+section: req.body.section,
+steps: req.body.steps
+};
+
+const updatedRecipe = await Recipe.findByIdAndUpdate(recipeId, updatedData, { new: true });
+
+if (!updatedRecipe) {
+return res.status(404).send('Recipe not found');
+}
+
+res.status(200).json(updatedRecipe);
+} catch (error) {
+res.status(500).send('Server error');
+}
+});
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads')); // Для обслуживания загруженных файлов
 
 // Запуск сервера
 app.listen(port, () => {

@@ -156,6 +156,44 @@ stepsContainer.appendChild(stepDiv);
 }
 }
 
+async function saveRecipe() {
+const urlParams = new URLSearchParams(window.location.search);
+const recipeId = urlParams.get('id');
+if (!recipeId) {
+alert('Recipe not found');
+return;
+}
+
+const recipeData = {
+title: document.getElementById('title').value,
+shortDescription: document.getElementById('shortDescription').value,
+description: document.getElementById('description').value,
+time: document.getElementById('time').value,
+section: document.getElementById('section').value,
+steps: []
+};
+
+for (let i = 1; i <= document.getElementById('stepCount').value; i++) {
+recipeData.steps.push(document.getElementById(`step${i}`).value);
+}
+
+const response = await fetch(`http://localhost:3000/recipes/${recipeId}`, {
+method: 'PUT',
+headers: {
+'Content-Type': 'application/json'
+},
+body: JSON.stringify(recipeData)
+});
+
+if (response.ok) {
+alert('Recipe updated successfully');
+closeModal();
+loadRecipePage(); // Перезагрузка страницы для отображения обновленных данных
+} else {
+alert('Failed to update recipe');
+}
+}
+
 function closeModal() {
 document.getElementById('myModal').style.display = "none";
 }
@@ -169,7 +207,7 @@ document.querySelector('.close').onclick = function() {
 closeModal();
 }
 
-// When the user clicks anywhere outside of the modal, close it
+// When the user clicks anywhere outside of the
 window.onclick = function(event) {
 if (event.target == document.getElementById('myModal')) {
 closeModal();
