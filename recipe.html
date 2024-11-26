@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Recipe Page</title>
-<style>
-.recipe { margin-bottom: 20px; }
-.recipe-content { margin-bottom: 10px; }
-img { max-width: 100%; height: auto; }
-.step { margin-bottom: 10px; }
-.step img { max-width: 100%; height: auto; }
-</style>
+<link rel="stylesheet" href="styles/recipe.css">
 </head>
 <body>
-<div id="recipe-page"></div>
+<div id="recipe-page" class="content-wrapper"></div>
+
+<div class="buttons">
+<button id="edit-button">Edit</button>
+<button id="delete-button" onclick="deleteRecipe()">Delete</button>
+<button id="back-button" onclick="goBack()">Back</button>
+</div>
 
 <script>
 async function loadRecipePage() {
@@ -48,5 +48,8 @@ ${recipe.stepImages && recipe.stepImages[index] ? `<img src="http://localhost:30
 // Load the recipe when the page loads
 window.onload = loadRecipePage;
 </script>
+<script src="scripts/back.js"></script>
+<script src="scripts/delete.js"></script>
+<script src="scripts/back.js"></script>
 </body>
 </html>

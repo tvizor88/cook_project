@@ -137,6 +137,23 @@ app.get('/recipes/:id', async (req, res) => {
 
 //-----------------------------------up code is workin DO NOT TATCH----------------------------------------------------------//
 
+//route to delete recipe
+app.delete('/recipes/:id', async (req, res) => {
+    const recipeId = req.params.id;
+    try {
+    // Предположим, что у вас есть модель Recipe для работы с коллекцией рецептов
+    const result = await Recipe.findByIdAndDelete(recipeId);
+    if (result) {
+    res.status(200).send({ message: 'Recipe deleted successfully' });
+    } else {
+    res.status(404).send({ message: 'Recipe not found' });
+    }
+    } catch (error) {
+    res.status(500).send({ message: 'Failed to delete recipe', error });
+    }
+    });
+
+
 // Запуск сервера
 app.listen(port, () => {
 console.log(`Server is running on http://localhost:${port}`);
