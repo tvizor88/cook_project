@@ -103,8 +103,7 @@ async function uploadImage(file, endpoint) {
     var photoId = $(this).data('photo-id');
     // Удаление фотографии из формы
     $(`#photo-${photoId}`).remove();
-    // Показ кнопки загрузки
-    $(`#upload-button-${photoId}`).show();
+
     });
     
     // Функция для загрузки новой фотографии
@@ -183,51 +182,51 @@ async function uploadImage(file, endpoint) {
     }
     
     function openModal() {
-    document.getElementById('myModal').style.display = 'block';
-    // Предзаполнение формы при открытии модального окна
-    const urlParams = new URLSearchParams(window.location.search);
-    const recipeId = urlParams.get('id');
-    if (recipeId) {
-    fetch(`http://localhost:3000/recipes/${recipeId}`)
-    .then(response => response.json())
-    .then(recipe => {
-    document.getElementById('title').value = recipe.title || '';
-    document.getElementById('shortDescription').value = recipe.shortDescription || '';
-    document.getElementById('description').value = recipe.description || '';
-    document.getElementById('time').value = recipe.time || '';
-    document.getElementById('section').value = recipe.section || '';
-    document.getElementById('stepCount').value = recipe.steps.length || '';
-    document.getElementById('currentCoverImage').src = `http://localhost:3000${recipe.coverImage}`;
+        document.getElementById('myModal').style.display = 'block';
+        // Предзаполнение формы при открытии модального окна
+        const urlParams = new URLSearchParams(window.location.search);
+        const recipeId = urlParams.get('id');
+        if (recipeId) {
+        fetch(`http://localhost:3000/recipes/${recipeId}`)
+        .then(response => response.json())
+        .then(recipe => {
+        document.getElementById('title').value = recipe.title || '';
+        document.getElementById('shortDescription').value = recipe.shortDescription || '';
+        document.getElementById('description').value = recipe.description || '';
+        document.getElementById('time').value = recipe.time || '';
+        document.getElementById('section').value = recipe.section || '';
+        document.getElementById('stepCount').value = recipe.steps.length || '';
+        document.getElementById('currentCoverImage').src = `http://localhost:3000${recipe.coverImage}`;
+        
+        // Заполнение шагов
+        const stepsContainer = document.getElementById('stepsContainer');
+        stepsContainer.innerHTML = '';
+        recipe.steps.forEach((step, index) => {
+        const stepDiv = document.createElement('div');
+        stepDiv.className = 'step';
+        stepDiv.innerHTML = `
+        <label for="step${index + 1}">Шаг ${index + 1}:</label><br>
+        <textarea id="step${index + 1}" name="step${index + 1}" placeholder="Введите шаг">${step}</textarea><br><br>
+        ${recipe.stepImages && recipe.stepImages[index] ? `
+        <div id="photo-step-${index + 1}">
+        <img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${index + 1}">
+        <button class="delete-photo" data-photo-id="step-${index + 1}">X</button>
+        </div>
+        <button id="upload-button-step-${index + 1}" class="upload-photo" data-photo-id="step-${index + 1}" style="display:none;">Загрузить фото</button>
+        ` : `
+        <input type="file" id="stepImage${index + 1}" name="stepImages[]" accept="image/*"><br>
+        `}
+        `;
+        stepsContainer.appendChild(stepDiv);
+        });
+        });
+        }
+        }
     
-    // Заполнение шагов
-    const stepsContainer = document.getElementById('stepsContainer');
-    stepsContainer.innerHTML = '';
-    recipe.steps.forEach((step, index) => {
-    const stepDiv = document.createElement('div');
-    stepDiv.className = 'step';
-    stepDiv.innerHTML = `
-    <label for="step${index + 1}">Шаг ${index + 1}:</label><br>
-    <textarea id="step${index + 1}" name="step${index + 1}" placeholder="Введите шаг">${step}</textarea><br><br>
-    ${recipe.stepImages && recipe.stepImages[index] ? `
-    <div id="photo-step-${index + 1}">
-    <img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${index + 1}">
-    <button class="delete-photo" data-photo-id="step-${index + 1}">X</button>
-    </div>
-    <button id="upload-button-step-${index + 1}" class="upload-photo" data-photo-id="step-${index + 1}" style="display:none;">Загрузить фото</button>
-    ` : `
-    <input type="file" id="stepImage${index + 1}" name="stepImages[]" accept="image/*"><br>
-    `}
-    `;
-    stepsContainer.appendChild(stepDiv);
-    });
-    });
-    }
-    }
     function closeModal() {
         document.getElementById('myModal').style.display = 'none';
         }
-        
-        function goBack() {
+    function goBack() {
         const previousPage = document.referrer;
         if (previousPage) {
         window.location.href = previousPage;
@@ -250,4 +249,3 @@ async function uploadImage(file, endpoint) {
         
         // Load the recipe when the page loads
         window.onload = loadRecipePage;
-        
