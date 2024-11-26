@@ -60,7 +60,9 @@
 <label for="time">Время приготовления:</label><br>
 <input type="text" id="time" name="time" placeholder="Введите время приготовления"><br><br>
 
-<label for="coverImage">Загрузить обложку:</label><br>
+<label for="coverImage">Текущая обложка:</label><br>
+<img id="currentCoverImage" src="" alt="Текущая обложка" style="max-width: 100%; height: auto;"><br><br>
+<label for="coverImage">Загрузить новую обложку:</label><br>
 <input type="file" id="coverImage" name="coverImage"><br><br>
 
 <div id="stepsContainer"></div>
@@ -129,12 +131,13 @@ if (recipeId) {
 fetch(`http://localhost:3000/recipes/${recipeId}`)
 .then(response => response.json())
 .then(recipe => {
-document.getElementById('title').value = recipe.title|| '';
+document.getElementById('title').value = recipe.title || '';
 document.getElementById('shortDescription').value = recipe.shortDescription || '';
-document.getElementById('description').value = recipe.description|| '';
-document.getElementById('time').value = recipe.time|| '';
-document.getElementById('section').value = recipe.section|| '';
-document.getElementById('stepCount').value = recipe.steps.length|| '';
+document.getElementById('description').value = recipe.description || '';
+document.getElementById('time').value = recipe.time || '';
+document.getElementById('section').value = recipe.section || '';
+document.getElementById('stepCount').value = recipe.steps.length || '';
+document.getElementById('currentCoverImage').src = `http://localhost:3000${recipe.coverImage}`;
 
 // Заполнение шагов
 const stepsContainer = document.getElementById('stepsContainer');
