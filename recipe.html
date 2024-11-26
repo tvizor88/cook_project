@@ -61,7 +61,12 @@
 <input type="text" id="time" name="time" placeholder="Введите время приготовления"><br><br>
 
 <label for="coverImage">Текущая обложка:</label><br>
-<img id="currentCoverImage" src="" alt="Текущая обложка" style="max-width: 100%; height: auto;"><br><br>
+<div id="photo-cover">
+<img id="currentCoverImage" src="" alt="Текущая обложка" style="max-width: 100%; height: auto;">
+<button class="delete-photo" data-photo-id="cover">X</button>
+</div>
+<button id="upload-button-cover" class="upload-photo" data-photo-id="cover" style="display:none;">Загрузить фото</button><br><br>
+
 <label for="coverImage">Загрузить новую обложку:</label><br>
 <input type="file" id="coverImage" name="coverImage"><br><br>
 
@@ -72,7 +77,25 @@
 </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+$(document).ready(function() {
+// Функция для удаления фотографии
+$(document).on('click', '.delete-photo', function() {
+var photoId = $(this).data('photo-id');
+// Удаление фотографии из формы
+$(`#photo-${photoId}`).remove();
+// Показ кнопки загрузки
+$(`#upload-button-${photoId}`).show();
+});
+
+// Функция для загрузки новой фотографии
+$(document).on('click', '.upload-photo', function() {
+var photoId = $(this).data('photo-id');
+// Логика загрузки фотографии
+});
+});
+
 async function loadRecipePage() {
 const urlParams = new URLSearchParams(window.location.search);
 const recipeId = urlParams.get('id');
@@ -95,7 +118,11 @@ recipeContainer.innerHTML = `
 ${recipe.steps.map((step, index) => `
 <div class="step">
 <p>${step}</p>
-${recipe.stepImages && recipe.stepImages[index] ? `<img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${index + 1}">` : ''}
+${recipe.stepImages && recipe.stepImages[index] ? `
+<div id="photo-step-${index + 1}">
+<img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${index + 1}">
+</div>
+` : ''}
 </div>
 `).join('')}
 </div>
@@ -148,14 +175,19 @@ stepDiv.className = 'step';
 stepDiv.innerHTML = `
 <label for="step${index + 1}">Шаг ${index + 1}:</label><br>
 <textarea id="step${index + 1}" name="step${index + 1}" placeholder="Введите шаг">${step}</textarea><br><br>
-${recipe.stepImages && recipe.stepImages[index] ? `<img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${index + 1}"><br><br>` : ''}
+${recipe.stepImages && recipe.stepImages[index] ? `
+<div id="photo-step-${index + 1}">
+<img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${index + 1}">
+<button class="delete-photo" data-photo-id="step-${index + 1}">X</button>
+</div>
+<button id="upload-button-step-${index + 1}" class="upload-photo" data-photo-id="step-${index + 1}" style="display:none;">Загрузить фото</button>
+` : ''}
 `;
 stepsContainer.appendChild(stepDiv);
 });
 });
 }
 }
-
 async function saveRecipe() {
 const urlParams = new URLSearchParams(window.location.search);
 const recipeId = urlParams.get('id');
@@ -170,11 +202,24 @@ shortDescription: document.getElementById('shortDescription').value,
 description: document.getElementById('description').value,
 time: document.getElementById('time').value,
 section: document.getElementById('section').value,
-steps: []
+steps: [],
+coverImage: '',
+stepImages: []
 };
+
+const coverImageElement = document.getElementById('currentCoverImage');
+if (coverImageElement) {
+recipeData.coverImage = coverImageElement.src;
+}
 
 for (let i = 1; i <= document.getElementById('stepCount').value; i++) {
 recipeData.steps.push(document.getElementById(`step${i}`).value);
+const stepImage = document.querySelector(`#photo-step-${i} img`);
+if (stepImage) {
+recipeData.stepImages.push(stepImage.src);
+} else {
+recipeData.stepImages.push('');
+}
 }
 
 const response = await fetch(`http://localhost:3000/recipes/${recipeId}`, {
@@ -194,7 +239,6 @@ loadRecipePage(); // Перезагрузка страницы для отобр
 alert('Failed to update recipe');
 }
 }
-
 function closeModal() {
 document.getElementById('myModal').style.display = "none";
 }
@@ -223,5 +267,6 @@ closeModal();
 // Load the recipe when the page loads
 window.onload = loadRecipePage;
 </script>
+<script src="scripts/recipe.js"></script>
 </body>
 </html>

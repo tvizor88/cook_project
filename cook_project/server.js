@@ -152,28 +152,35 @@ res.status(500).send({ message: 'Failed to delete recipe', error });
 
 // Обновление рецепта
 app.put('/recipes/:id', async (req, res) => {
-try {
-const recipeId = req.params.id;
-const updatedData = {
-title: req.body.title,
-shortDescription: req.body.shortDescription,
-description: req.body.description,
-time: req.body.time,
-section: req.body.section,
-steps: req.body.steps
-};
-
-const updatedRecipe = await Recipe.findByIdAndUpdate(recipeId, updatedData, { new: true });
-
-if (!updatedRecipe) {
-return res.status(404).send('Recipe not found');
-}
-
-res.status(200).json(updatedRecipe);
-} catch (error) {
-res.status(500).send('Server error');
-}
-});
+    try {
+    const recipeId = req.params.id;
+    const updatedData = {
+    title: req.body.title,
+    shortDescription: req.body.shortDescription,
+    description: req.body.description,
+    time: req.body.time,
+    section: req.body.section,
+    steps: req.body.steps
+    };
+    
+    // Проверка на пустое значение coverImage
+    if (req.body.coverImage && req.body.coverImage.trim() === '') {
+    delete updatedData.coverImage;
+    } else {
+    updatedData.coverImage = req.body.coverImage;
+    }
+    
+    const updatedRecipe = await Recipe.findByIdAndUpdate(recipeId, updatedData, { new: true });
+    
+    if (!updatedRecipe) {
+    return res.status(404).send('Recipe not found');
+    }
+    
+    res.status(200).json(updatedRecipe);
+    } catch (error) {
+    res.status(500).send('Server error');
+    }
+    });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
