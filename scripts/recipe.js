@@ -52,26 +52,27 @@ async function uploadImage(file, endpoint) {
         }
         }
     
-    for (let i = 1; i <= document.getElementById('stepCount').value; i++) {
-    recipeData.steps.push(document.getElementById(`step${i}`).value);
-    const stepImageInput = document.getElementById(`stepImage${i}`);
-    if (stepImageInput && stepImageInput.files.length > 0) {
-    const stepImageFile = stepImageInput.files[0];
-    const stepImagePath = await uploadImage(stepImageFile, 'http://localhost:3000/upload');
-    if (stepImagePath) {
-    recipeData.stepImages.push(stepImagePath);
-    } else {
-    recipeData.stepImages.push('');
-    }
-    } else {
-    const stepImageElement = document.querySelector(`#photo-step-${i} img`);
-    if (stepImageElement) {
-    recipeData.stepImages.push(stepImageElement.src);
-    } else {
-    recipeData.stepImages.push('');
-    }
-    }
-    }
+        for (let i = 1; i <= document.getElementById('stepCount').value; i++) {
+            recipeData.steps.push(document.getElementById(`step${i}`).value);
+            const stepImageInput = document.getElementById(`stepImage${i}`);
+            if (stepImageInput && stepImageInput.files.length > 0) {
+            const stepImageFile = stepImageInput.files[0];
+            const stepImagePath = await uploadImage(stepImageFile, 'http://localhost:3000/upload');
+            if (stepImagePath) {
+            recipeData.stepImages.push(stepImagePath);
+            } else {
+            recipeData.stepImages.push('');
+            }
+            } else {
+            const stepImageElement = document.querySelector(`#photo-step-${i} img`);
+            if (stepImageElement) {
+            const stepImageUrl = new URL(stepImageElement.src);
+            recipeData.stepImages.push(stepImageUrl.pathname); // Сохраняем только относительный путь
+            } else {
+            recipeData.stepImages.push('');
+            }
+            }
+            }
     
     const response = await fetch(`http://localhost:3000/recipes/${recipeId}`, {
     method: 'PUT',
