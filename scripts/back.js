@@ -28,8 +28,12 @@ async function loadRecipePage() {
     }
     
     function goBack() {
-    window.history.back();
-    }
+        window.history.back();
+        setTimeout(() => {
+        window.location.reload();
+        }, 1000);
+        }
     
     // Load the recipe when the page loads
     window.onload = loadRecipePage;
+    window.location.reload();

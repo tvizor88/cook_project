@@ -187,6 +187,7 @@ body: JSON.stringify(recipeData)
 
 if (response.ok) {
 alert('Recipe updated successfully');
+localStorage.setItem('recipesUpdated', 'true'); // Устанавливаем флаг в localStorage
 closeModal();
 loadRecipePage(); // Перезагрузка страницы для отображения обновленных данных
 } else {
@@ -199,7 +200,12 @@ document.getElementById('myModal').style.display = "none";
 }
 
 function goBack() {
+const previousPage = document.referrer;
+if (previousPage) {
+window.location.href = previousPage;
+} else {
 window.history.back();
+}
 }
 
 // When the user clicks on <span> (x), close the modal
@@ -207,7 +213,7 @@ document.querySelector('.close').onclick = function() {
 closeModal();
 }
 
-// When the user clicks anywhere outside of the
+// When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
 if (event.target == document.getElementById('myModal')) {
 closeModal();
