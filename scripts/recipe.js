@@ -22,80 +22,80 @@ async function uploadImage(file, endpoint) {
     }
     
     async function saveRecipe() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const recipeId = urlParams.get('id');
-    if (!recipeId) {
-    alert('Recipe not found');
-    return;
-    }
-    
-    const recipeData = {
-    title: document.getElementById('title').value,
-    shortDescription: document.getElementById('shortDescription').value,
-    description: document.getElementById('description').value,
-    time: document.getElementById('time').value,
-    section: document.getElementById('section').value,
-    steps: [],
-    coverImage: '',
-    stepImages: []
-    };
-    
-    const coverImageInput = document.getElementById('coverImage');
-    if (coverImageInput && coverImageInput.files.length > 0) {
-    const coverImageFile = coverImageInput.files[0];
-    const coverImagePath = await uploadImage(coverImageFile, 'http://localhost:3000/uploadCoverImage');
-    if (coverImagePath) {
-    recipeData.coverImage = coverImagePath;
-    }
-    } else {
-    const coverImageElement = document.getElementById('currentCoverImage');
-    if (coverImageElement && coverImageElement.src) {
-    const coverImageUrl = new URL(coverImageElement.src);
-    recipeData.coverImage = coverImageUrl.pathname; // Сохраняем только относительный путь
-    } else {
-    recipeData.coverImage = ''; // Устанавливаем пустую строку, если изображение удалено
-    }
-    }
-    
-    for (let i = 1; i <= document.getElementById('stepCount').value; i++) {
-    recipeData.steps.push(document.getElementById(`step${i}`).value);
-    const stepImageInput = document.getElementById(`stepImage${i}`);
-    if (stepImageInput && stepImageInput.files.length > 0) {
-    const stepImageFile = stepImageInput.files[0];
-    const stepImagePath = await uploadImage(stepImageFile, 'http://localhost:3000/uploadStepImage');
-    if (stepImagePath) {
-    recipeData.stepImages.push(stepImagePath);
-    } else {
-    recipeData.stepImages.push('');
-    }
-    } else {
-    const stepImageElement = document.querySelector(`#photo-step-${i} img`);
-    if (stepImageElement) {
-    const stepImageUrl = new URL(stepImageElement.src);
-    recipeData.stepImages.push(stepImageUrl.pathname); // Сохраняем только относительный путь
-    } else {
-    recipeData.stepImages.push('');
-    }
-    }
-    }
-    
-    const response = await fetch(`http://localhost:3000/recipes/${recipeId}`, {
-    method: 'PUT',
-    headers: {
-    'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(recipeData)
-    });
-    
-    if (response.ok) {
-    alert('Recipe updated successfully');
-    localStorage.setItem('recipesUpdated', 'true'); // Устанавливаем флаг в localStorage
-    closeModal();
-    loadRecipePage(); // Перезагрузка страницы для отображения обновленных данных
-    } else {
-    alert('Failed to update recipe');
-    }
-    }
+        const urlParams = new URLSearchParams(window.location.search);
+        const recipeId = urlParams.get('id');
+        if (!recipeId) {
+        alert('Recipe not found');
+        return;
+        }
+        
+        const recipeData = {
+        title: document.getElementById('title').value,
+        shortDescription: document.getElementById('shortDescription').value,
+        description: document.getElementById('description').value,
+        time: document.getElementById('time').value,
+        section: document.getElementById('section').value,
+        steps: [],
+        coverImage: '',
+        stepImages: []
+        };
+        
+        const coverImageInput = document.getElementById('coverImage');
+        if (coverImageInput && coverImageInput.files.length > 0) {
+        const coverImageFile = coverImageInput.files[0];
+        const coverImagePath = await uploadImage(coverImageFile, 'http://localhost:3000/uploadCoverImage');
+        if (coverImagePath) {
+        recipeData.coverImage = coverImagePath;
+        }
+        } else {
+        const coverImageElement = document.getElementById('currentCoverImage');
+        if (coverImageElement && coverImageElement.src) {
+        const coverImageUrl = new URL(coverImageElement.src);
+        recipeData.coverImage = coverImageUrl.pathname; // Сохраняем только относительный путь
+        } else {
+        recipeData.coverImage = ''; // Устанавливаем пустую строку, если изображение удалено
+        }
+        }
+        
+        for (let i = 1; i <= document.getElementById('stepCount').value; i++) {
+        recipeData.steps.push(document.getElementById(`step${i}`).value);
+        const stepImageInput = document.getElementById(`stepImage${i}`);
+        if (stepImageInput && stepImageInput.files.length > 0) {
+        const stepImageFile = stepImageInput.files[0];
+        const stepImagePath = await uploadImage(stepImageFile, 'http://localhost:3000/uploadStepImage');
+        if (stepImagePath) {
+        recipeData.stepImages.push(stepImagePath);
+        } else {
+        recipeData.stepImages.push('');
+        }
+        } else {
+        const stepImageElement = document.querySelector(`#photo-step-${i} img`);
+        if (stepImageElement) {
+        const stepImageUrl = new URL(stepImageElement.src);
+        recipeData.stepImages.push(stepImageUrl.pathname); // Сохраняем только относительный путь
+        } else {
+        recipeData.stepImages.push('');
+        }
+        }
+        }
+        
+        const response = await fetch(`http://localhost:3000/recipes/${recipeId}`, {
+        method: 'PUT',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(recipeData)
+        });
+        
+        if (response.ok) {
+        alert('Recipe updated successfully');
+        localStorage.setItem('recipesUpdated', 'true'); // Устанавливаем флаг в localStorage
+        closeModal();
+        loadRecipePage(); // Перезагрузка страницы для отображения обновленных данных
+        } else {
+        alert('Failed to update recipe');
+        }
+        }
     
     $(document).ready(function() {
     // Функция для удаления фотографии
@@ -103,7 +103,6 @@ async function uploadImage(file, endpoint) {
     var photoId = $(this).data('photo-id');
     // Удаление фотографии из формы
     $(`#photo-${photoId}`).remove();
-
     });
     
     // Функция для загрузки новой фотографии
@@ -181,6 +180,25 @@ async function uploadImage(file, endpoint) {
     }
     }
     
+    function updateSteps() {
+        const stepCount = parseInt(document.getElementById('stepCount').value);
+        const stepsContainer = document.getElementById('stepsContainer');
+        stepsContainer.innerHTML = '';
+        
+        for (let i = 1; i <= stepCount; i++) {
+        const stepDiv = document.createElement('div');
+        stepDiv.className = 'step';
+        stepDiv.innerHTML = `
+        <label for="step${i}">Шаг ${i}:</label><br>
+        <textarea id="step${i}" name="step${i}" placeholder="Введите шаг"></textarea><br><br>
+        <input type="file" id="stepImage${i}" name="stepImages[]" accept="image/*"><br>
+        `;
+        stepsContainer.appendChild(stepDiv);
+        }
+        }
+        
+    document.getElementById('stepCount').addEventListener('change', updateSteps);
+        
     function openModal() {
         document.getElementById('myModal').style.display = 'block';
         // Предзаполнение формы при открытии модального окна
@@ -198,35 +216,71 @@ async function uploadImage(file, endpoint) {
         document.getElementById('stepCount').value = recipe.steps.length || '';
         document.getElementById('currentCoverImage').src = `http://localhost:3000${recipe.coverImage}`;
         
+        // Обновляем шаги
+        updateSteps();
+        
         // Заполнение шагов
-        const stepsContainer = document.getElementById('stepsContainer');
-        stepsContainer.innerHTML = '';
         recipe.steps.forEach((step, index) => {
-        const stepDiv = document.createElement('div');
-        stepDiv.className = 'step';
-        stepDiv.innerHTML = `
-        <label for="step${index + 1}">Шаг ${index + 1}:</label><br>
-        <textarea id="step${index + 1}" name="step${index + 1}" placeholder="Введите шаг">${step}</textarea><br><br>
-        ${recipe.stepImages && recipe.stepImages[index] ? `
-        <div id="photo-step-${index + 1}">
+        document.getElementById(`step${index + 1}`).value = step;
+        if (recipe.stepImages && recipe.stepImages[index]) {
+        const stepImageDiv = document.createElement('div');
+        stepImageDiv.id = `photo-step-${index + 1}`;
+        stepImageDiv.innerHTML = `
         <img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${index + 1}">
         <button class="delete-photo" data-photo-id="step-${index + 1}">X</button>
-        </div>
-        <button id="upload-button-step-${index + 1}" class="upload-photo" data-photo-id="step-${index + 1}" style="display:none;">Загрузить фото</button>
-        ` : `
-        <input type="file" id="stepImage${index + 1}" name="stepImages[]" accept="image/*"><br>
-        `}
         `;
-        stepsContainer.appendChild(stepDiv);
+        document.getElementById(`stepImage${index + 1}`).parentNode.insertBefore(stepImageDiv, document.getElementById(`stepImage${index + 1}`));
+        document.getElementById(`stepImage${index + 1}`).style.display = 'none';
+        }
         });
         });
         }
         }
-    
-    function closeModal() {
+        
+    document.getElementById('stepCount').addEventListener('change', updateSteps);  
+    function openModal() {
+        document.getElementById('myModal').style.display = 'block';
+        // Предзаполнение формы при открытии модального окна
+        const urlParams = new URLSearchParams(window.location.search);
+        const recipeId = urlParams.get('id');
+        if (recipeId) {
+        fetch(`http://localhost:3000/recipes/${recipeId}`)
+        .then(response => response.json())
+        .then(recipe => {
+        document.getElementById('title').value = recipe.title || '';
+        document.getElementById('shortDescription').value = recipe.shortDescription || '';
+        document.getElementById('description').value = recipe.description || '';
+        document.getElementById('time').value = recipe.time || '';
+        document.getElementById('section').value = recipe.section || '';
+        document.getElementById('stepCount').value = recipe.steps.length || '';
+        document.getElementById('currentCoverImage').src = `http://localhost:3000${recipe.coverImage}`;
+        
+        // Обновляем шаги
+        updateSteps();
+        
+        // Заполнение шагов
+        recipe.steps.forEach((step, index) => {
+        document.getElementById(`step${index + 1}`).value = step;
+        if (recipe.stepImages && recipe.stepImages[index]) {
+        const stepImageDiv = document.createElement('div');
+        stepImageDiv.id = `photo-step-${index + 1}`;
+        stepImageDiv.innerHTML = `
+        <img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${index + 1}">
+        <button class="delete-photo" data-photo-id="step-${index + 1}">X</button>
+        `;
+        document.getElementById(`stepImage${index + 1}`).parentNode.insertBefore(stepImageDiv, document.getElementById(`stepImage${index + 1}`));
+        document.getElementById(`stepImage${index + 1}`).style.display = 'none';
+        }
+        });
+        });
+        }
+    }
+        
+        function closeModal() {
         document.getElementById('myModal').style.display = 'none';
         }
-    function goBack() {
+        
+        function goBack() {
         const previousPage = document.referrer;
         if (previousPage) {
         window.location.href = previousPage;
