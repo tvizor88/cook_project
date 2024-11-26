@@ -10,9 +10,64 @@
 <div id="recipe-page" class="content-wrapper"></div>
 
 <div class="buttons">
-<button id="edit-button">Edit</button>
+<button id="edit-button" onclick="openModal()">Edit</button>
 <button id="delete-button" onclick="deleteRecipe()">Delete</button>
 <button id="back-button" onclick="goBack()">Back</button>
+</div>
+
+<div id="myModal" class="modal">
+<div class="modal-content">
+<span class="close">×</span>
+<h2>Редактировать рецепт</h2>
+<form id="recipeForm">
+<label for="title">Название:</label><br>
+<input type="text" id="title" name="title" placeholder="Введите название рецепта"><br><br>
+
+<label for="stepCount">Количество шагов:</label><br>
+<select id="stepCount" name="stepCount">
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+<option value="13">13</option>
+<option value="14">14</option>
+<option value="15">15</option>
+</select><br><br>
+
+<label for="section">Раздел:</label><br>
+<select id="section" name="section">
+<option value="first">Первое</option>
+<option value="second">Второе</option>
+<option value="dough">Тесто</option>
+<option value="healthy">Правильное питание</option>
+<option value="salads">Салаты</option>
+<option value="all">Все подряд</option>
+</select><br><br>
+
+<label for="shortDescription">Краткое описание:</label><br>
+<textarea id="shortDescription" name="shortDescription" placeholder="Введите краткое описание"></textarea><br><br>
+
+<label for="description">Ингредиенты:</label><br>
+<textarea id="description" name="description" placeholder="Введите ингредиенты, каждый с новой строки"></textarea><br><br>
+
+<label for="time">Время приготовления:</label><br>
+<input type="text" id="time" name="time" placeholder="Введите время приготовления"><br><br>
+
+<label for="coverImage">Загрузить обложку:</label><br>
+<input type="file" id="coverImage" name="coverImage"><br><br>
+
+<div id="stepsContainer"></div>
+
+<button type="button" onclick="saveRecipe()">Сохранить рецепт</button>
+</form>
+</div>
 </div>
 
 <script>
@@ -45,11 +100,81 @@ ${recipe.stepImages && recipe.stepImages[index] ? `<img src="http://localhost:30
 `;
 }
 
+async function deleteRecipe() {
+const urlParams = new URLSearchParams(window.location.search);
+const recipeId = urlParams.get('id');
+if (!recipeId) {
+alert('Recipe not found');
+return;
+}
+
+const response = await fetch(`http://localhost:3000/recipes/${recipeId}`, {
+method: 'DELETE'
+});
+
+if (response.ok) {
+alert('Recipe deleted successfully');
+window.location.href = '/'; // Перенаправление на главную страницу после удаления
+} else {
+alert('Failed to delete recipe');
+}
+}
+
+function openModal() {
+document.getElementById('myModal').style.display = "block";
+// Предзаполнение формы при открытии модального окна
+const urlParams = new URLSearchParams(window.location.search);
+const recipeId = urlParams.get('id');
+if (recipeId) {
+fetch(`http://localhost:3000/recipes/${recipeId}`)
+.then(response => response.json())
+.then(recipe => {
+document.getElementById('title').value = recipe.title|| '';
+document.getElementById('shortDescription').value = recipe.shortDescription || '';
+document.getElementById('description').value = recipe.description|| '';
+document.getElementById('time').value = recipe.time|| '';
+document.getElementById('section').value = recipe.section|| '';
+document.getElementById('stepCount').value = recipe.steps.length|| '';
+
+// Заполнение шагов
+const stepsContainer = document.getElementById('stepsContainer');
+stepsContainer.innerHTML = '';
+recipe.steps.forEach((step, index) => {
+const stepDiv = document.createElement('div');
+stepDiv.className = 'step';
+stepDiv.innerHTML = `
+<label for="step${index + 1}">Шаг ${index + 1}:</label><br>
+<textarea id="step${index + 1}" name="step${index + 1}" placeholder="Введите шаг">${step}</textarea><br><br>
+${recipe.stepImages && recipe.stepImages[index] ? `<img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${index + 1}"><br><br>` : ''}
+`;
+stepsContainer.appendChild(stepDiv);
+});
+});
+}
+}
+
+function closeModal() {
+document.getElementById('myModal').style.display = "none";
+}
+
+function goBack() {
+window.history.back();
+}
+
+// When the user clicks on <span> (x), close the modal
+document.querySelector('.close').onclick = function() {
+closeModal();
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+if (event.target == document.getElementById('myModal')) {
+closeModal();
+}
+}
+
 // Load the recipe when the page loads
 window.onload = loadRecipePage;
 </script>
-<script src="scripts/back.js"></script>
-<script src="scripts/delete.js"></script>
-<script src="scripts/back.js"></script>
 </body>
 </html>
