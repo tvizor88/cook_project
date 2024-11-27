@@ -6,7 +6,8 @@
     <a href="healthy.html">Правильное питание</a>
     <a href="salads.html">Салаты</a>
     <a href="all.html">Все подряд</a>
-   
+    <a href="small.html">Малыши</a>
+    <a href="products.html">Продукты</a>
     <button id="logoutBtn" style="margin-left: auto;" onclick="logout()">Logout</button>
     </nav>
     <link rel="stylesheet" href="styles/nav.css">
@@ -30,9 +31,11 @@
     }
     
     function toggleDisplay(selector, show) {
-    const element = document.querySelector(selector) || document.getElementById(selector);
+    const element = document.querySelector(selector);
     if (element) {
     element.style.display = show ? 'block' : 'none';
     }
     }
     </script>
+    
+  
