@@ -7,7 +7,10 @@ const path = require("path"); // import libs
 const fs = require("fs"); // import libs
 
 const app = express(); // create app sample
-const port = 3000; // set server port
+const port = process.env.port || 3000; // set server port
+// app.listen(port, () => {
+// console.log(`App listening at http://localhost:${port}`);
+// });
 
 // Middleware
 app.use(bodyParser.json()); // json parser

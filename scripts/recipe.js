@@ -295,13 +295,19 @@ function closeModal() {
 }
 
 function goBack() {
-  const previousPage = document.referrer;
-  if (previousPage) {
-    window.location.href = previousPage;
+  const currentSection = localStorage.getItem('currentSection');
+  console.log(currentSection)
+
+  if (currentSection) {
+  // Перенаправление на страницу секции
+  window.location.href = `${currentSection}.html`;
   } else {
-    window.history.back();
-  }
-}
+  // Перенаправление на главную страницу, если секция не найдена
+  window.location.href = 'index.html';
+  
+  } }
+  
+
 document.addEventListener('DOMContentLoaded', function() {
   // Проверка наличия данных аутентификации в localStorage
   const authData = localStorage.getItem('auth');
