@@ -320,6 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
   .catch(error => console.error('Ошибка загрузки навигационной панели:', error));
   } else {
   console.log('Пользователь не аутентифицирован, навигационная панель не загружается');
+  window.location.href = 'index.html';
   }
   });
   
@@ -387,6 +388,7 @@ if (authData) {
   console.log(userRole);
   } else {
   console.log('No auth data found in localStorage');
+  window.location.href = 'index.html';
   }
  
   // document.addEventListener('DOMContentLoaded', function() {

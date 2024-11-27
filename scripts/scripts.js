@@ -38,6 +38,8 @@ function authenticate() {
         .catch(error => console.error('Ошибка загрузки навигационной панели:', error));
         } else {
         console.log('Пользователь не аутентифицирован, навигационная панель не загружается');
+       
+       
         }
         });
         

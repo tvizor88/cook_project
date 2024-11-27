@@ -6,36 +6,10 @@
     <a href="healthy.html">Правильное питание</a>
     <a href="salads.html">Салаты</a>
     <a href="all.html">Все подряд</a>
-    <a href="small.html">Малыши</a>
-    <a href="products.html">Продукты</a>
+   <!-- <a href="small.html">Малыши</a>
+    <a href="products.html">Продукты</a>-->
     <button id="logoutBtn" style="margin-left: auto;" onclick="logout()">Logout</button>
     </nav>
     <link rel="stylesheet" href="styles/nav.css">
+    <script src="scripts/nav.js"></script>
     
-    <script>
-    function logout() {
-    localStorage.clear();
-    toggleDisplay('header', false);
-    toggleDisplay('nav', false);
-    toggleDisplay('.container', false);
-    const authModal = document.getElementById('authModal');
-    if (authModal) {
-    authModal.style.display = 'block';
-    setTimeout(() => {
-    location.reload();
-    }, 100);
-    } else {
-    sessionStorage.setItem('showAuthModal', 'true');
-    window.location.href = 'index.html';
-    }
-    }
-    
-    function toggleDisplay(selector, show) {
-    const element = document.querySelector(selector);
-    if (element) {
-    element.style.display = show ? 'block' : 'none';
-    }
-    }
-    </script>
-    
-  
