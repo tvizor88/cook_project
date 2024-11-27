@@ -94,7 +94,6 @@ async function saveRecipe() {
   });
 
   if (response.ok) {
-    alert("Recipe updated successfully");
     localStorage.setItem("recipesUpdated", "true"); // Устанавливаем флаг в localStorage
     closeModal();
     loadRecipePage(); // Перезагрузка страницы для отображения обновленных данных
@@ -177,25 +176,36 @@ async function deleteRecipe() {
   const urlParams = new URLSearchParams(window.location.search);
   const recipeId = urlParams.get("id");
   if (!recipeId) {
-    alert("Recipe not found");
-    return;
+  alert("Recipe not found");
+  return;
   }
-
+  
   try {
-    const response = await fetch(`http://localhost:3000/recipes/${recipeId}`, {
-      method: "DELETE",
-    });
+  const response = await fetch(`http://localhost:3000/recipes/${recipeId}`, {
+  method: "DELETE",
+  });
+  
+  if (response.ok) {
 
-    if (response.ok) {
-      
-      window.location.href = "/"; // Перенаправление на главную страницу после удаления
-    } else {
-      alert("Failed to delete recipe");
-    }
-  } catch (error) {
-    console.error("Ошибка при удалении рецепта:", error);
+console.log(response)
+  // Извлечение секции из localStorage
+  const currentSection = localStorage.getItem('currentSection');
+  console.log(currentSection)
+
+  if (currentSection) {
+  // Перенаправление на страницу секции
+  window.location.href = `${currentSection}.html`;
+  } else {
+  // Перенаправление на главную страницу, если секция не найдена
+  window.location.href = 'index.html';
   }
-}
+  } else {
+  alert("Failed to delete recipe");
+  }
+  } catch (error) {
+  console.error("Ошибка при удалении рецепта:", error);
+  }
+  }
 
 function updateSteps() {
   const stepCount = parseInt(document.getElementById("stepCount").value);
@@ -278,7 +288,24 @@ function goBack() {
     window.history.back();
   }
 }
-
+document.addEventListener('DOMContentLoaded', function() {
+  // Проверка наличия данных аутентификации в localStorage
+  const authData = localStorage.getItem('auth');
+  if (authData) {
+  fetch('nav.html')
+  .then(response => response.text())
+  .then(data => {
+  document.getElementById('nav-placeholder').innerHTML = data;
+  })
+  .catch(error => console.error('Ошибка загрузки навигационной панели:', error));
+  } else {
+  console.log('Пользователь не аутентифицирован, навигационная панель не загружается');
+  }
+  });
+  
+  // Получение секции из атрибута data-section
+  const section = document.body.dataset.section;
+  
 // When the user clicks on <span> (x), close the modal
 document.querySelector(".close").onclick = function () {
   closeModal();

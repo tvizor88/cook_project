@@ -43,6 +43,7 @@ function authenticate() {
         
         // Получение секции из атрибута data-section
         const section = document.body.dataset.section;
+        localStorage.setItem('currentSection', section);
       
       
     // Функция проверки аутентификации
