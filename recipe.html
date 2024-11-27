@@ -79,19 +79,8 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-fetch('nav.html')
-.then(response => response.text())
-.then(data => {
-document.getElementById('nav-placeholder').innerHTML = data;
-})
-.catch(error => console.error('Ошибка загрузки навигационной панели:', error));
-});
-
   
-// Получение секции из атрибута data-section
-const section = document.body.dataset.section;
-</script>
+    </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="scripts/recipe.js"></script>
 </body>

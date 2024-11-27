@@ -187,7 +187,7 @@ async function deleteRecipe() {
     });
 
     if (response.ok) {
-      alert("Recipe deleted successfully");
+      
       window.location.href = "/"; // Перенаправление на главную страницу после удаления
     } else {
       alert("Failed to delete recipe");
@@ -211,59 +211,6 @@ function updateSteps() {
         <input type="file" id="stepImage${i}" name="stepImages[]" accept="image/*"><br>
         `;
     stepsContainer.appendChild(stepDiv);
-  }
-}
-
-document.getElementById("stepCount").addEventListener("change", updateSteps);
-
-function openModal() {
-  document.getElementById("myModal").style.display = "block";
-  // Предзаполнение формы при открытии модального окна
-  const urlParams = new URLSearchParams(window.location.search);
-  const recipeId = urlParams.get("id");
-  if (recipeId) {
-    fetch(`http://localhost:3000/recipes/${recipeId}`)
-      .then((response) => response.json())
-      .then((recipe) => {
-        document.getElementById("title").value = recipe.title || "";
-        document.getElementById("shortDescription").value =
-          recipe.shortDescription || "";
-        document.getElementById("description").value = recipe.description || "";
-        document.getElementById("time").value = recipe.time || "";
-        document.getElementById("section").value = recipe.section || "";
-        document.getElementById("stepCount").value = recipe.steps.length || "";
-        document.getElementById(
-          "currentCoverImage"
-        ).src = `http://localhost:3000${recipe.coverImage}`;
-
-        // Обновляем шаги
-        updateSteps();
-
-        // Заполнение шагов
-        recipe.steps.forEach((step, index) => {
-          document.getElementById(`step${index + 1}`).value = step;
-          if (recipe.stepImages && recipe.stepImages[index]) {
-            const stepImageDiv = document.createElement("div");
-            stepImageDiv.id = `photo-step-${index + 1}`;
-            stepImageDiv.innerHTML = `
-        <img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${
-              index + 1
-            }">
-        <button class="delete-photo" data-photo-id="step-${
-          index + 1
-        }">X</button>
-        `;
-            document
-              .getElementById(`stepImage${index + 1}`)
-              .parentNode.insertBefore(
-                stepImageDiv,
-                document.getElementById(`stepImage${index + 1}`)
-              );
-            document.getElementById(`stepImage${index + 1}`).style.display =
-              "none";
-          }
-        });
-      });
   }
 }
 
@@ -336,7 +283,36 @@ function goBack() {
 document.querySelector(".close").onclick = function () {
   closeModal();
 };
-
+function logout() {
+  localStorage.clear();
+  // Скрываем элементы страницы
+  toggleDisplay('header', false);
+  toggleDisplay('nav', false);
+  toggleDisplay('.container', false);
+  toggleDisplay('nav-placeholder', false); // Скрываем nav-placeholder
+  toggleDisplay('body', false);
+  // Показываем модальное окно аутентификации
+  const authModal = document.getElementById('authModal');
+  if (authModal) {
+  authModal.style.display = 'block';
+  // Перезагружаем страницу после отображения модального окна
+  setTimeout(() => {
+  location.reload();
+  }, 1000); // Небольшая задержка для отображения модального окна
+  } else {
+  // Если модальное окно не найдено, перенаправляем на index.html
+  sessionStorage.setItem('showAuthModal', 'true');
+  window.location.href = 'index.html';
+  }
+  }
+  
+  // Функция переключения отображения элементов
+  function toggleDisplay(selector, show) {
+  const element = document.querySelector(selector) || document.getElementById(selector);
+  if (element) {
+  element.style.display = show ? 'block' : 'none';
+  }
+  }
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
   if (event.target == document.getElementById("myModal")) {
@@ -356,6 +332,7 @@ if (authData) {
   if (userRole === 'admin') {
     document.getElementById('edit-button').style.display = 'inline-block';
     document.getElementById('delete-button').style.display = 'inline-block';
+    
     } else {
     document.getElementById('edit-button').style.display = 'none';
     document.getElementById('delete-button').style.display = 'none';

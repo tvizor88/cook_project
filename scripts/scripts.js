@@ -4,10 +4,12 @@ function authenticate() {
     
     if (username === 'admin' && password === 'admin') {
     localStorage.setItem('auth', JSON.stringify({ role: 'admin', timestamp: new Date().getTime() }));
+    location.reload();
     loadPage(true);
     } else if (username === 'user' && password === 'user') {
     localStorage.setItem('auth', JSON.stringify({ role: 'user', timestamp: new Date().getTime() }));
-    loadPage(false);
+    location.reload();
+    loadPage(true);
     } else {
     document.getElementById('authError').style.display = 'block';
     }
@@ -24,7 +26,25 @@ function authenticate() {
     toggleDisplay('addRecipeBtn', true);
     }
     }
-    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Проверка наличия данных аутентификации в localStorage
+        const authData = localStorage.getItem('auth');
+        if (authData) {
+        fetch('nav.html')
+        .then(response => response.text())
+        .then(data => {
+        document.getElementById('nav-placeholder').innerHTML = data;
+        })
+        .catch(error => console.error('Ошибка загрузки навигационной панели:', error));
+        } else {
+        console.log('Пользователь не аутентифицирован, навигационная панель не загружается');
+        }
+        });
+        
+        // Получение секции из атрибута data-section
+        const section = document.body.dataset.section;
+      
+      
     // Функция проверки аутентификации
     function checkAuth() {
     const auth = JSON.parse(localStorage.getItem('auth'));

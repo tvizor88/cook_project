@@ -1,11 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('nav.html')
+    
+        // Проверка наличия данных аутентификации в localStorage
+        const authData = localStorage.getItem('auth');
+        if (authData) {
+        fetch('nav.html')
     .then(response => response.text())
     .then(data => {
     document.getElementById('nav-placeholder').innerHTML = data;
     })
     .catch(error => console.error('Ошибка загрузки навигационной панели:', error));
-    
+}
     // Обработчик изменения количества шагов
     const stepCountInput = document.getElementById('stepCount');
     if (stepCountInput) {
