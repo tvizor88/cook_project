@@ -343,6 +343,28 @@ window.onclick = function (event) {
     closeModal();
   }
 };
+// Получение строки JSON из localStorage
+const authData = localStorage.getItem('auth');
+// Проверка, что данные существуют
+if (authData) {
+  // Разбор строки JSON в объект
+  const authObject = JSON.parse(authData);
+  
+  // Получение значения role
+  const userRole = authObject.role;
+  
+  if (userRole === 'admin') {
+    document.getElementById('edit-button').style.display = 'inline-block';
+    document.getElementById('delete-button').style.display = 'inline-block';
+    } else {
+    document.getElementById('edit-button').style.display = 'none';
+    document.getElementById('delete-button').style.display = 'none';
+    }
+  console.log(userRole);
+  } else {
+  console.log('No auth data found in localStorage');
+  }
+ 
 
 // Load the recipe when the page loads
 window.onload = loadRecipePage;

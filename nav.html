@@ -9,3 +9,11 @@
     <button id="logoutBtn" style="margin-left: auto;" onclick="logout()">Logout</button>
     </nav>
     <link rel="stylesheet" href="styles/nav.css">
+    <script>
+        document.getElementById('logout-button').addEventListener('click', function() {
+        // Очистка данных аутентификации из localStorage
+        localStorage.removeItem('auth');
+        // Перенаправление на страницу входа или обновление текущей страницы
+        window.location.href = 'login.html'; // Замените на URL страницы входа
+        });
+        </script>
