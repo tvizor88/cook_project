@@ -101,11 +101,12 @@ async function saveRecipe() {
     alert("Failed to update recipe");
   }
 }
-
+//delete cover ing
 $(document).ready(function () {
   // Функция для удаления фотографии
   $(document).on("click", ".delete-photo", function () {
     var photoId = $(this).data("photo-id");
+    console.log(photoId)
     // Удаление фотографии из формы
     $(`#photo-${photoId}`).remove();
   });
@@ -115,6 +116,18 @@ $(document).ready(function () {
     var photoId = $(this).data("photo-id");
     // Логика загрузки фотографии
   });
+});
+//delete step img
+$(document).ready(function () {
+  // Функция для удаления фотографии
+  $(document).on("click", ".delete-photo", function () {
+    var photoId = $(this).data("photo-id");
+    console.log(photoId)
+    // Удаление фотографии из формы
+    $(`#photo-${photoId}`).remove();
+  });
+
+ 
 });
 
 async function loadRecipePage() {
@@ -154,9 +167,11 @@ async function loadRecipePage() {
       recipe.stepImages && recipe.stepImages[index]
         ? `
     <div id="photo-step-${index + 1}">
+    <div id="________________________________________">
     <img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${
             index + 1
           }">
+        
     </div>
     `
         : ""
@@ -217,8 +232,8 @@ function updateSteps() {
     stepDiv.className = "step";
     stepDiv.innerHTML = `
         <label for="step${i}">Шаг ${i}:</label><br>
-        <textarea id="step${i}" name="step${i}" placeholder="Введите шаг"></textarea><br><br>
-        <input type="file" id="stepImage${i}" name="stepImages[]" accept="image/*"><br>
+        <textarea id="step${i}" name="step${i}" placeholder="Введите шаг"></textarea><br>
+        <input type="file" id="stepImage${i}" name="stepImages[]" accept="image/*"><br><br><br><br><br>
         `;
     stepsContainer.appendChild(stepDiv);
   }
@@ -255,13 +270,12 @@ function openModal() {
             const stepImageDiv = document.createElement("div");
             stepImageDiv.id = `photo-step-${index + 1}`;
             stepImageDiv.innerHTML = `
-        <img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${
-              index + 1
-            }">
-        <button class="delete-photo" data-photo-id="step-${
-          index + 1
-        }">X</button>
-        `;
+        <img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${index + 1 }"><br>
+<label for="stepImage">Загрузить новую фотографию для шага ${index + 1} </label><br>
+
+<input type="file" id="stepImage" name="stepImage"><br><br>
+        `
+        ;
             document
               .getElementById(`stepImage${index + 1}`)
               .parentNode.insertBefore(
