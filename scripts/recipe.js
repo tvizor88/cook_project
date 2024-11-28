@@ -10,6 +10,7 @@ async function uploadImage(file, endpoint) {
 
     if (response.ok) {
       const data = await response.json();
+      console.log("Uploaded image path:", data); // Добавьте это
       return data.filePath;
     } else {
       console.error("Ошибка при загрузке изображения");
@@ -71,6 +72,8 @@ async function saveRecipe() {
       );
       if (stepImagePath) {
         recipeData.stepImages.push(stepImagePath);
+        console.log("Recipe data before saving:", recipeData); 
+        console.log("Recipe data before saving:", stepImagePath);
       } else {
         recipeData.stepImages.push("");
       }
@@ -84,6 +87,7 @@ async function saveRecipe() {
       }
     }
   }
+  console.log("Recipe data before saving:", recipeData); 
 
   const response = await fetch(`http://localhost:3000/recipes/${recipeId}`, {
     method: "PUT",
@@ -91,12 +95,13 @@ async function saveRecipe() {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(recipeData),
+    
   });
-
+  console.log("put method data",recipeData)
   if (response.ok) {
     localStorage.setItem("recipesUpdated", "true"); // Устанавливаем флаг в localStorage
     closeModal();
-    loadRecipePage(); // Перезагрузка страницы для отображения обновленных данных
+   loadRecipePage(); // Перезагрузка страницы для отображения обновленных данных
   } else {
     alert("Failed to update recipe");
   }
@@ -120,15 +125,14 @@ $(document).ready(function () {
 //delete step img
 $(document).ready(function () {
   // Функция для удаления фотографии
-  $(document).on("click", ".delete-photo", function () {
-    var photoId = $(this).data("photo-id");
-    console.log(photoId)
-    // Удаление фотографии из формы
-    $(`#photo-${photoId}`).remove();
+  $(document).on("click", ".delete-photo", function (event) {
+  event.preventDefault(); // Отменяем стандартное поведение кнопки
+  var photoId = $(this).data("photo-id");
+  console.log(photoId);
+  // Удаление фотографии из DOM
+  $(`#photo-${photoId}`).remove();
   });
-
- 
-});
+  });
 
 async function loadRecipePage() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -142,6 +146,7 @@ async function loadRecipePage() {
   try {
     const response = await fetch(`http://localhost:3000/recipes/${recipeId}`);
     const recipe = await response.json();
+    console.log("Loaded recipe data:", recipe); // Добавьте это
     const recipeContainer = document.getElementById("recipe-page");
 
     // Проверка наличия coverImage
@@ -162,16 +167,15 @@ async function loadRecipePage() {
       .map(
         (step, index) => `
     <div class="step">
+   
     <p>${step}</p>
     ${
       recipe.stepImages && recipe.stepImages[index]
         ? `
     <div id="photo-step-${index + 1}">
     <div id="________________________________________">
-    <img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${
-            index + 1
-          }">
-        
+    <img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${index + 1}">
+       
     </div>
     `
         : ""
@@ -272,8 +276,7 @@ function openModal() {
             stepImageDiv.innerHTML = `
         <img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${index + 1 }"><br>
 <label for="stepImage">Загрузить новую фотографию для шага ${index + 1} </label><br>
-
-<input type="file" id="stepImage" name="stepImage"><br><br>
+<button class="delete-photo" data-photo-id="step-${index + 1}"> X </button>  
         `
         ;
             document
@@ -293,7 +296,18 @@ function openModal() {
 function closeModal() {
   document.getElementById("myModal").style.display = "none";
 }
-
+document.addEventListener('DOMContentLoaded', function() {
+  // Обработчик клика для кнопок удаления
+  document.querySelectorAll('.delete-step-image').forEach(button => {
+  button.addEventListener('click', function() {
+  const stepId = this.getAttribute('data-step-id');
+  const stepImageDiv = document.getElementById(`photo-step-${stepId}`);
+  if (stepImageDiv) {
+  stepImageDiv.remove(); // Удаление элемента из DOM
+  }
+  });
+  });
+  });
 function goBack() {
   const currentSection = localStorage.getItem('currentSection');
   console.log(currentSection)
