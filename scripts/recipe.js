@@ -279,7 +279,7 @@ function openModal() {
   stepImageDiv.style.position = "relative"; // Добавлено для позиционирования кнопки
   stepImageDiv.innerHTML = `
   <img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${index + 1}" style="width: 50%;"><br>
-  <button class="delete-photo" data-photo-id="step-${index + 1}" style="position: absolute; top: 10px; right: 10px;">X</button>
+  <button class="delete-photo" data-photo-id="step-${index + 1}" style="position: absolute; top: 10px; right: 10px;">delete step ${index + 1} photo</button>
 
   `;
   document

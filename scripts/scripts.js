@@ -2,7 +2,7 @@ function authenticate() {
     const username = document.getElementById('authUsername').value;
     const password = document.getElementById('authPassword').value;
     
-    if (username === 'admin' && password === 'admin') {
+    if (username === 'admin' && password === 'CH1QAacc!') {
     localStorage.setItem('auth', JSON.stringify({ role: 'admin', timestamp: new Date().getTime() }));
     location.reload();
     loadPage(true);
