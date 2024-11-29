@@ -5,7 +5,7 @@ const cors = require("cors"); // import libs
 const multer = require("multer"); // import libs
 const path = require("path"); // import libs
 const fs = require("fs"); // import libs
-
+const API_BASE_URL = "thhp://localhost:3000"
 const app = express(); // create app sample
 const port = process.env.port || 3000; // set server port
 // app.listen(port, () => {
