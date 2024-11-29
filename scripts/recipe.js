@@ -453,53 +453,5 @@ if (authData) {
   console.log('No auth data found in localStorage');
   window.location.href = 'index.html';
   }
- 
-  // document.addEventListener('DOMContentLoaded', function() {
-  //   document.getElementById('edit-button').addEventListener('click', saveRecipeToLocalStorage);
-  // });
-  // function saveRecipeToLocalStorage() {
-  //   // Получение данных рецепта
-  //   const recipeTitle = document.getElementById('title').innerHTML;
-  //   const recipeDescription = document.getElementById('description').innerText;
-  //   const coverImage = document.getElementById('currentCoverImage').src;
-    
-  //   // Получение шагов и изображений шагов
-  //   const steps = [];
-  //   const stepsImages = [];
-  //   const stepsContainer = document.getElementById('stepsContainer');
-  //   const stepElements = stepsContainer.getElementsByClassName('step');
-    
-  //   Array.from(stepElements).forEach(stepElement => {
-  //   const stepText = stepElement.querySelector('.step.text').innerText;
-  //   const stepImage = stepElement.querySelector('.step.image').src;
-    
-  //   steps.push(stepText);
-  //   stepsImages.push(stepImage);
-  //   });
-    
-  //   // Сохранение данных в localStorage
-  //   const recipeData = {
-  //   title: recipeTitle,
-  //   description: recipeDescription,
-  //   coverImage: coverImage,
-  //   steps: steps,
-  //   stepsImages: stepsImages
-  //   };
-    
-  //   localStorage.setItem('recipeData', JSON.stringify(recipeData));
-  //   alert('Данные рецепта сохранены в localStorage!');
-  //   }
-    
-  //   // Пример использования: добавьте этот обработчик к кнопке "Edit"
-   
-
-
-
-
-
-
-
-  
-
 // Load the recipe when the page loads
 window.onload = loadRecipePage;

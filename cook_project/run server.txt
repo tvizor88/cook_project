@@ -1,1 +1,1 @@
-node server.js
+node server.js8 from comand line from Desktop\cook_pet\cook_project
