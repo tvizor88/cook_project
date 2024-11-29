@@ -131,6 +131,8 @@ $(document).ready(function () {
   console.log(photoId);
   // Удаление фотографии из DOM
   $(`#photo-${photoId}`).remove();
+  // Добавление нового элемента input
+  $('<input>', {type: 'file',id: `stepImage${photoId}`,name: 'stepImages[]',accept: 'image/*',style: 'display: block'}).appendTo('stepsContainer.step');
   });
   });
 
@@ -237,61 +239,98 @@ function updateSteps() {
     stepDiv.innerHTML = `
         <label for="step${i}">Шаг ${i}:</label><br>
         <textarea id="step${i}" name="step${i}" placeholder="Введите шаг"></textarea><br>
-        <input type="file" id="stepImage${i}" name="stepImages[]" accept="image/*"><br><br><br><br><br>
+        <input type="file" id="stepImage${i}" name="stepImages[]" accept="image/*" style="dispaly:block"><br><br><br><br><br>
         `;
     stepsContainer.appendChild(stepDiv);
   }
 }
 
 document.getElementById("stepCount").addEventListener("change", updateSteps);
+
 function openModal() {
   document.getElementById("myModal").style.display = "block";
   // Предзаполнение формы при открытии модального окна
   const urlParams = new URLSearchParams(window.location.search);
   const recipeId = urlParams.get("id");
   if (recipeId) {
-    fetch(`http://localhost:3000/recipes/${recipeId}`)
-      .then((response) => response.json())
-      .then((recipe) => {
-        document.getElementById("title").value = recipe.title || "";
-        document.getElementById("shortDescription").value =
-          recipe.shortDescription || "";
-        document.getElementById("description").value = recipe.description || "";
-        document.getElementById("time").value = recipe.time || "";
-        document.getElementById("section").value = recipe.section || "";
-        document.getElementById("stepCount").value = recipe.steps.length || "";
-        document.getElementById(
-          "currentCoverImage"
-        ).src = `http://localhost:3000${recipe.coverImage}`;
+  fetch(`http://localhost:3000/recipes/${recipeId}`)
+  .then((response) => response.json())
+  .then((recipe) => {
+  document.getElementById("title").value = recipe.title || "";
+  document.getElementById("shortDescription").value =
+  recipe.shortDescription || "";
+  document.getElementById("description").value = recipe.description || "";
+  document.getElementById("time").value = recipe.time || "";
+  document.getElementById("section").value = recipe.section || "";
+  document.getElementById("stepCount").value = recipe.steps.length || "";
+  document.getElementById(
+  "currentCoverImage"
+  ).src = `http://localhost:3000${recipe.coverImage}`;
+  
+  // Обновляем шаги
+  updateSteps();
+  
+  // Заполнение шагов
+  recipe.steps.forEach((step, index) => {
+  document.getElementById(`step${index + 1}`).value = step;
+  if (recipe.stepImages && recipe.stepImages[index]) {
+  const stepImageDiv = document.createElement("div");
+  stepImageDiv.id = `stepImage-${index + 1}`;
+  stepImageDiv.style.position = "relative"; // Добавлено для позиционирования кнопки
+  stepImageDiv.innerHTML = `
+  <img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${index + 1}" style="width: 50%;"><br>
+  <button class="delete-photo" data-photo-id="step-${index + 1}" style="position: absolute; top: 10px; right: 10px;">X</button>
 
-        // Обновляем шаги
-        updateSteps();
+  `;
+  document
+  .getElementById(`stepImage${index + 1}`)
+  .parentNode.insertBefore(
+  stepImageDiv,
+  document.getElementById(`stepImage${index + 1}`)
+  );
+  document.getElementById(`stepImage${index + 1}`).style.display =
+  "none";
+  
+  // Добавляем обработчик для кнопки удаления
+  stepImageDiv.querySelector('.delete-photo').addEventListener('click', function() {
+    // Удаление изображения
+    stepImageDiv.querySelector('img').remove(); 
+    
+    // parent.removeChild(stepImageDiv);
+    // stepImageDiv.appendChild(newLabel);
+    // stepImageDiv.appendChild(newInputFile);
+    // parent.insertBefore(stepImageDiv, nextSibling);
 
-        // Заполнение шагов
-        recipe.steps.forEach((step, index) => {
-          document.getElementById(`step${index + 1}`).value = step;
-          if (recipe.stepImages && recipe.stepImages[index]) {
-            const stepImageDiv = document.createElement("div");
-            stepImageDiv.id = `photo-step-${index + 1}`;
-            stepImageDiv.innerHTML = `
-        <img src="http://localhost:3000${recipe.stepImages[index]}" alt="Шаг ${index + 1 }"><br>
-<label for="stepImage">Загрузить новую фотографию для шага ${index + 1} </label><br>
-<button class="delete-photo" data-photo-id="step-${index + 1}"> X </button>  
-        `
-        ;
-            document
-              .getElementById(`stepImage${index + 1}`)
-              .parentNode.insertBefore(
-                stepImageDiv,
-                document.getElementById(`stepImage${index + 1}`)
-              );
-            document.getElementById(`stepImage${index + 1}`).style.display =
-              "none";
-          }
-        });
-      });
+    // Создаем новые элементы input и label
+    const newInputFile = document.createElement('input');
+    newInputFile.type = 'file';
+    newInputFile.id = `stepImage${index+1}`;
+    newInputFile.name = 'stepImages[]';
+    newInputFile.accept = 'image/*';
+    newInputFile.style.display = 'block';
+    
+    const newLabel = document.createElement('label');
+    newLabel.htmlFor = `stepImage${index+1}`;
+    newLabel.style.display = 'block';
+    newLabel.textContent = `Загрузить новую фотографию для шага ${index + 1}`;
+    
+    const parent = stepImageDiv.parentNode;
+    const nextSibling = stepImageDiv.nextSibling;
+    parent.removeChild(stepImageDiv);
+    stepImageDiv.appendChild(newLabel);
+    stepImageDiv.appendChild(newInputFile);
+    parent.insertBefore(stepImageDiv, nextSibling);
+    
+    // Удаление кнопки
+    this.remove(); 
+    });
   }
-}
+  });
+  });
+  }
+  }
+  
+  
 
 function closeModal() {
   document.getElementById("myModal").style.display = "none";
@@ -301,10 +340,20 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.delete-step-image').forEach(button => {
   button.addEventListener('click', function() {
   const stepId = this.getAttribute('data-step-id');
-  const stepImageDiv = document.getElementById(`photo-step-${stepId}`);
+  const stepImageDiv = document.getElementById(`img${stepId}`);
   if (stepImageDiv) {
+    console.log(stepImageDiv)
   stepImageDiv.remove(); // Удаление элемента из DOM
   }
+  // Добавление нового элемента input
+  const inputElement = document.createElement('input');
+  inputElement.type = 'file';
+  inputElement.id = `stepImage${stepId}`;
+  inputElement.name = 'stepImages[]';
+  inputElement.accept = 'image/*';
+  inputElement.style.display = 'block';
+  // Добавление input после кнопки удаления
+  this.stepsContainer.appendChild(inputElement);
   });
   });
   });
