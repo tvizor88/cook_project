@@ -201,18 +201,23 @@ async function deleteRecipe() {
   return;
   }
   
+  // Окно подтверждения
+  const confirmation = confirm("Вы уверены, что хотите удалить этот рецепт?");
+  if (!confirmation) {
+  return;
+  }
+  
   try {
   const response = await fetch(`http://localhost:3000/recipes/${recipeId}`, {
   method: "DELETE",
   });
   
   if (response.ok) {
-
-console.log(response)
+  console.log(response);
   // Извлечение секции из localStorage
   const currentSection = localStorage.getItem('currentSection');
-  console.log(currentSection)
-
+  console.log(currentSection);
+  
   if (currentSection) {
   // Перенаправление на страницу секции
   window.location.href = `${currentSection}.html`;
