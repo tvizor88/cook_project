@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Recipe Page</title>
 <link rel="stylesheet" href="styles/recipe.css">
+<link rel="icon" href="styles\favicon-32x32.png" type="image/x-icon">
 </head>
 <body>
 <div id="nav-placeholder"></div>
@@ -24,6 +25,27 @@
 <label for="title">Название:</label><br>
 <input type="text" id="title" name="title" placeholder="Введите название рецепта"><br><br>
 
+<label for="section">Раздел:</label><br>
+<select id="section" name="section">
+<option value="first">Первое</option>
+<option value="second">Второе</option>
+<option value="dough">Тесто</option>
+<option value="bake">Сладкое тесто</option>
+<option value="healthy">Правильное питание</option>
+<option value="salads">Салаты</option>
+<option value="all">Все подряд</option>
+<option value="alco">Напитки</option>
+</select><br><br>
+
+<label for="shortDescription">Краткое описание:</label><br>
+<textarea id="shortDescription" name="shortDescription" placeholder="Введите краткое описание"></textarea><br><br>
+
+<label for="description">Ингредиенты:</label><br>
+<textarea id="description" name="description" placeholder="Введите ингредиенты, каждый с новой строки"></textarea><br><br>
+
+<label for="time">Время приготовления:</label><br>
+<input type="text" id="time" name="time" placeholder="Введите время приготовления"><br><br>
+
 <label for="stepCount">Количество шагов:</label><br>
 <select id="stepCount" name="stepCount">
 <option value="2">2</option>
@@ -41,25 +63,6 @@
 <option value="14">14</option>
 <option value="15">15</option>
 </select><br><br>
-
-<label for="section">Раздел:</label><br>
-<select id="section" name="section">
-<option value="first">Первое</option>
-<option value="second">Второе</option>
-<option value="dough">Тесто</option>
-<option value="healthy">Правильное питание</option>
-<option value="salads">Салаты</option>
-<option value="all">Все подряд</option>
-</select><br><br>
-
-<label for="shortDescription">Краткое описание:</label><br>
-<textarea id="shortDescription" name="shortDescription" placeholder="Введите краткое описание"></textarea><br><br>
-
-<label for="description">Ингредиенты:</label><br>
-<textarea id="description" name="description" placeholder="Введите ингредиенты, каждый с новой строки"></textarea><br><br>
-
-<label for="time">Время приготовления:</label><br>
-<input type="text" id="time" name="time" placeholder="Введите время приготовления"><br><br>
 
 <label for="coverImage">Текущая обложка:</label><br>
 <div id="photo-cover">
